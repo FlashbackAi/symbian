@@ -39,6 +39,8 @@ import {
   HOST_ORDER,
   HOST_CAPTIONS,
   HOST_ALTS,
+  HOST_NAMES,
+  HOST_SPECS,
   SLOTS,
   slotStagger,
   type HostKey,
@@ -81,6 +83,9 @@ export default function Hosts() {
   const hostGroupRef = useRef<SVGGElement>(null);
   const crossRef = useRef<SVGGElement>(null);
   const captionRef = useRef<HTMLSpanElement>(null);
+  const hostBlockRef = useRef<HTMLDivElement>(null);
+  const hostNameRef = useRef<HTMLParagraphElement>(null);
+  const hostSpecRef = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
     const runway = runwayRef.current;
@@ -126,6 +131,14 @@ export default function Hosts() {
             tl.to(crossRef.current, { opacity: 1, duration: 0.2 }, at)
               .to(crossRef.current, { opacity: 0, duration: 0.25 }, at + MORPH - 0.25);
           }
+
+          // The host annotation dims through the change and returns with the
+          // new host's name. The module annotation beside it never moves —
+          // that contrast is the argument, stated in the margin.
+          if (hostBlockRef.current) {
+            tl.to(hostBlockRef.current, { opacity: 0.12, duration: 0.25 }, at)
+              .to(hostBlockRef.current, { opacity: 1, duration: 0.3 }, at + MORPH - 0.3);
+          }
         }
 
         // A no-op tail tween so the last host gets a real hold at the end of
@@ -140,10 +153,12 @@ export default function Hosts() {
         let shown = -1;
         const sync = () => {
           const idx = hostIndexAt(tl.progress() * TOTAL);
-          if (idx !== shown && captionRef.current) {
-            shown = idx;
-            captionRef.current.textContent = HOST_CAPTIONS[HOST_ORDER[idx]];
-          }
+          if (idx === shown) return;
+          shown = idx;
+          const key = HOST_ORDER[idx];
+          if (captionRef.current) captionRef.current.textContent = HOST_CAPTIONS[key];
+          if (hostNameRef.current) hostNameRef.current.textContent = HOST_NAMES[key];
+          if (hostSpecRef.current) hostSpecRef.current.textContent = HOST_SPECS[key];
         };
         tl.eventCallback("onUpdate", sync);
         sync();
@@ -210,10 +225,58 @@ export default function Hosts() {
         style={{ height: "460vh" }}
       >
         <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-          <div
-            className="relative w-[min(92vw,660px)]"
-            style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
-          >
+          <div className="relative w-full max-w-[1180px] flex items-center justify-center">
+            {/* Left margin — the host, and what it is already good at. Changes. */}
+            <div
+              ref={hostBlockRef}
+              aria-hidden="true"
+              className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[200px] pointer-events-none"
+            >
+              <span className="block h-px w-8 bg-ink/40 mb-3" />
+              <p className="font-mono text-[9.5px] tracking-[0.3em] uppercase text-steel">
+                The host
+              </p>
+              <p
+                ref={hostNameRef}
+                className="font-display text-ink text-[17px] leading-[1.15] tracking-[-0.01em] mt-2"
+              >
+                {HOST_NAMES.quadruped}
+              </p>
+              <p
+                ref={hostSpecRef}
+                className="font-mono text-[9.5px] tracking-[0.18em] uppercase text-steel mt-2 leading-[1.6]"
+              >
+                {HOST_SPECS.quadruped}
+              </p>
+              <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-steel/70 mt-4 leading-[1.6]">
+                the platform&rsquo;s work — untouched
+              </p>
+            </div>
+
+            {/* Right margin — the module. Deliberately never changes. */}
+            <div
+              aria-hidden="true"
+              className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[200px] text-right pointer-events-none"
+            >
+              <span className="block h-px w-8 bg-ink/40 mb-3 ml-auto" />
+              <p className="font-mono text-[9.5px] tracking-[0.3em] uppercase text-steel">
+                The module
+              </p>
+              <p className="font-display text-ink text-[17px] leading-[1.15] tracking-[-0.01em] mt-2">
+                Unchanged
+              </p>
+              <p className="font-mono text-[9.5px] tracking-[0.18em] uppercase text-steel mt-2 leading-[1.6]">
+                eyes · ears · a voice
+              </p>
+              <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-hud-deep/80 mt-4 leading-[1.6]">
+                one skill, every host
+              </p>
+            </div>
+
+            <div
+              className="relative w-[min(92vw,660px)]"
+              style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
+            >
             {/* Host layer — 19 slots, each morphing independently */}
             <svg
               viewBox={`0 0 ${VB_W} ${VB_H}`}
@@ -258,6 +321,7 @@ export default function Hosts() {
             >
               <ModuleArt />
             </svg>
+            </div>
           </div>
 
           <p className="mt-6 md:mt-8 font-mono text-[10.5px] tracking-[0.3em] uppercase text-steel">
