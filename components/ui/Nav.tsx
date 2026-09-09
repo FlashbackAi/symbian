@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Flashback Labs — Nav.
+ * Symbian — Nav.
  *
  * Top bar: wordmark on the left, hamburger on the right (both rounded
  * "bubbles" with hairline borders — elevation without shadow).
@@ -15,24 +15,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import NavReactor, { type NavReactorItem } from "./NavReactor";
+import TeepinMark from "../svg/TeepinMark";
 
 /* Section ids in document order on `/`. The dial maps each item to one of
    these via `sectionId`; the spy picks whichever id is currently mid-screen. */
 const SPY_SECTIONS = [
   "hero",
   "manifesto",
-  "thesis",
+  "hosts",
   "principles",
   "infrastructure",
+  "thesis",
   "products",
-  "independence",
+  "partners",
   "closing",
 ] as const;
 
-/* Item set + their spy targets. `home` is the top of the page (hero), and
-   `thesis` covers the manifesto/thesis/principles run since they're a single
-   editorial unit. `get started` lives at the bottom (closing manifesto). */
-const FLASHBACK_ITEMS: (NavReactorItem & { spySections?: string[] })[] = [
+/* Item set + their spy targets. `home` is the top of the page (hero);
+   `thesis` covers the problem + the one-skill-every-host run since they're a
+   single editorial unit; `stack` covers the tower, the position plate and the
+   module. `early access` lives at the bottom (closing). */
+const SYMBIAN_ITEMS: (NavReactorItem & { spySections?: string[] })[] = [
   {
     label: "home",
     href: "/",
@@ -45,48 +48,47 @@ const FLASHBACK_ITEMS: (NavReactorItem & { spySections?: string[] })[] = [
     href: "/#manifesto",
     ariaLabel: "Thesis",
     sectionId: "manifesto",
-    spySections: ["manifesto", "thesis", "principles"],
+    spySections: ["manifesto", "hosts"],
   },
   {
-    label: "technology",
+    label: "skills",
+    href: "/#principles",
+    ariaLabel: "Skills",
+    sectionId: "principles",
+    spySections: ["principles"],
+  },
+  {
+    label: "stack",
     href: "/#infrastructure",
-    ariaLabel: "Technology",
+    ariaLabel: "The stack",
     sectionId: "infrastructure",
-    spySections: ["infrastructure"],
-  },
-  {
-    label: "products",
-    href: "/#products",
-    ariaLabel: "Products",
-    sectionId: "products",
-    spySections: ["products"],
+    spySections: ["infrastructure", "thesis", "products"],
   },
   {
     label: "partners",
-    href: "/#independence",
+    href: "/#partners",
     ariaLabel: "Partners",
-    sectionId: "independence",
-    spySections: ["independence"],
+    sectionId: "partners",
+    spySections: ["partners"],
   },
   {
-    label: "get started",
+    label: "early access",
     href: "/#closing",
-    ariaLabel: "Get Started",
+    ariaLabel: "Early access",
     sectionId: "closing",
     spySections: ["closing"],
   },
 ];
 
+/* Wordmark: the loop mark — Symbian's visor, Teepin's logo — beside the name
+   set in type. Same bubble, same weight as before; only the letters changed. */
 function Wordmark() {
   return (
-    <span className="font-display text-ink inline-flex items-center gap-2 text-[15px] md:text-[16px] tracking-[-0.03em] leading-none">
-      <span>FLASHBACK</span>
-      <span
-        className="w-px h-3 bg-gold"
-        aria-hidden="true"
-        style={{ backgroundColor: "#8B6914" }}
-      />
-      <span>LABS</span>
+    <span className="inline-flex items-center gap-2.5 text-ink leading-none">
+      <TeepinMark size={40} strokeWidth={15} className="shrink-0" />
+      <span className="font-display text-[15px] md:text-[16px] tracking-[0.08em]">
+        SYMBIAN
+      </span>
     </span>
   );
 }
@@ -123,7 +125,7 @@ export default function Nav() {
      translate observed sections into the right active item. */
   const sectionToIndex = useMemo(() => {
     const map = new Map<string, number>();
-    FLASHBACK_ITEMS.forEach((item, i) => {
+    SYMBIAN_ITEMS.forEach((item, i) => {
       (item.spySections ?? []).forEach((id) => map.set(id, i));
     });
     return map;
@@ -261,7 +263,7 @@ export default function Nav() {
         {/* Logo bubble */}
         <div
           className="inline-flex items-center justify-center rounded-full border border-hairline pointer-events-auto h-12 md:h-14 px-5 md:px-7 gap-2"
-          aria-label="Flashback Labs"
+          aria-label="Symbian"
           style={{ background: "#FFFFFF", minHeight: "48px" }}
         >
           <Wordmark />
@@ -319,7 +321,7 @@ export default function Nav() {
       </nav>
 
       <NavReactor
-        items={FLASHBACK_ITEMS}
+        items={SYMBIAN_ITEMS}
         activeIndex={activeIndex}
         open={open}
         onClose={() => setOpen(false)}

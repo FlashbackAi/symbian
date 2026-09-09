@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Flashback Labs — § 10 Closing Manifesto.
+ * Symbian — § 09 Early access.
  *
  * Full-viewport editorial closer. Words are pre-split into spans (same
  * structure as v1) and animated with the scroll-scrubbed blur + opacity
@@ -20,10 +20,10 @@ import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const S1_WORDS   = ["We", "are", "not", "building", "a", "future", "where", "humans", "become"];
-const OBSOLETE   = "obsolete.";
-const S2_WORDS   = ["We", "are", "building", "a", "future", "where", "humans", "become"];
-const GOLD_WORDS = ["more", "capable."];
+const S1_WORDS   = ["We", "didn't", "build", "the"];
+const OBSOLETE   = "robot.";
+const S2_WORDS   = ["We", "taught", "it", "to"];
+const GOLD_WORDS = ["notice."];
 
 export default function ClosingManifesto() {
   const rootRef    = useRef<HTMLElement>(null);
@@ -170,7 +170,7 @@ export default function ClosingManifesto() {
         <div className="flex items-center justify-center gap-4 mb-20">
           <span className="block h-px w-10 bg-ink/40" aria-hidden="true" />
           <span className="font-mono text-[10.5px] tracking-[0.28em] uppercase text-steel">
-            § 08 · CLOSING
+            § 09 · EARLY ACCESS
           </span>
           <span className="block h-px w-10 bg-ink/40" aria-hidden="true" />
         </div>
@@ -180,7 +180,7 @@ export default function ClosingManifesto() {
           id="closing-heading"
           ref={headingRef}
           className="font-display text-ink leading-[1.28] tracking-[-0.015em] text-[clamp(1.9rem,4.2vw,3.1rem)]"
-          aria-label="We are not building a future where humans become obsolete. We are building a future where humans become more capable."
+          aria-label="We didn't build the robot. We taught it to notice."
         >
           {/* Sentence 1 */}
           <span className="block mb-[0.5em]" aria-hidden="true">
@@ -222,27 +222,31 @@ export default function ClosingManifesto() {
         {/* Sign-off + CTAs */}
         <div ref={signoffRef} className="mt-16">
           <div className="mb-10 space-y-2 text-ink-soft text-[15px] md:text-[16px] leading-[1.55] max-w-[58ch] mx-auto">
-            <p>Lean team. Zero funding. One direction.</p>
             <p>
-              We are building this for the next decade and we are just getting
-              started.
+              It doesn&rsquo;t exist yet. There&rsquo;s a prototype and a small team.
+              No launch date, no price, no waitlist theatre.
+            </p>
+            <p>
+              Leave an email and we&rsquo;ll tell you when there&rsquo;s something
+              worth looking at &mdash; and if you build robots, drones or anything
+              with a host, tell us that too. We&rsquo;d rather co-build than guess.
             </p>
           </div>
           <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-steel">
-            FLASHBACK LABS
+            SYMBIAN
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <a
-              href="/manifesto"
+              href="mailto:hello@symbian.world?subject=Symbian%20early%20access"
               className="inline-flex items-center justify-center px-7 py-3 rounded-[4px] bg-hotrod text-paper-raised font-mono text-[12px] tracking-[0.12em] uppercase hover:bg-hotrod-deep transition-colors duration-220"
             >
-              Read Our Thesis
+              Get early access
             </a>
             <a
-              href="/community"
+              href="#manifesto"
               className="font-mono text-[12px] tracking-[0.12em] text-steel hover:text-ink transition-colors duration-220"
             >
-              Join Our Community
+              See how it works
             </a>
           </div>
         </div>

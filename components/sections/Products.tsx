@@ -1,23 +1,22 @@
 "use client";
 
 /**
- * Flashback Labs — § 05 Products.
+ * Symbian — § 07 The module.
  *
- * Asymmetric 60/40 layout: featured Flashback AI block on the left with
- * a phone-shaped placeholder image, a LIVE signal dot, bullets, and the
- * Document → Build → Engage → Privacy mini-flow terminating in a
- * scroll-triggered 55M count-up. Right column stacks Home Companion,
- * Car AI, Meta Quest as status-tagged sub-products.
+ * Asymmetric 60/40 layout: the module on the left — a sphere wearing the loop
+ * mark as its visor — with a PROTOTYPE status dot, four bullets, and the
+ * Attach → See → Reason → Speak mini-flow terminating in the one number that
+ * matters: 1 skill, every host. Right column stacks Teepin cloud, Skills and
+ * the gimbal as status-tagged rows.
  *
- * Placeholders live at /public/images/products/*.svg and are meant to be
- * swapped for real product artwork.
+ * No product artwork exists yet; every frame renders the loop mark itself.
  */
 
-import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
+import TeepinMark from "../svg/TeepinMark";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,57 +28,52 @@ type FlowStep = {
 };
 
 const FLOW: FlowStep[] = [
-  { numeral: "01", label: "Document", verb: "record · capture · log", glyph: "mic" },
-  { numeral: "02", label: "Build",    verb: "structure · recall",      glyph: "hammer" },
-  { numeral: "03", label: "Engage",   verb: "answer · assist · speak", glyph: "signal" },
-  { numeral: "04", label: "Privacy",  verb: "seal · encrypt · keep",   glyph: "lock" },
+  { numeral: "01", label: "Attach", verb: "mount · level · pair",     glyph: "lock" },
+  { numeral: "02", label: "See",    verb: "look · sample · notice",   glyph: "signal" },
+  { numeral: "03", label: "Reason", verb: "think · retrieve · decide", glyph: "hammer" },
+  { numeral: "04", label: "Speak",  verb: "answer · or stay quiet",   glyph: "mic" },
 ];
 
 type SubProduct = {
   key: string;
   numeral: string;
   name: string;
-  status: "SOON" | "DEV";
+  status: "RUNNING" | "BUILDING" | "MECHANICAL";
   eta: string;
   blurb: string;
-  image: string;
-  alt: string;
+  href?: string;
 };
 
 const SUB_PRODUCTS: SubProduct[] = [
   {
-    key: "teepin",
+    key: "cloud",
     numeral: "02",
-    name: "Teepin Mobile",
-    status: "SOON",
-    eta: "Launching May 2026",
-    blurb: "Your device becomes a node in a distributed compute network. Run open source models locally. Contribute compute. Consume compute. AI that never phones home.",
-    image: "/images/products/home-companion.svg",
-    alt: "Teepin Mobile product placeholder",
+    name: "Teepin cloud",
+    status: "RUNNING",
+    eta: "The platform we already build for enterprises",
+    blurb: "Where the thinking happens. Symbian carries almost no intelligence of its own — the reasoning, the model calls and the retrieval all run on Teepin.",
+    href: "https://teepin.com",
   },
   {
-    key: "home",
+    key: "skills",
     numeral: "03",
-    name: "Home Companion",
-    status: "SOON",
-    eta: "Q4 2026",
-    blurb: "Ambient AI for your household. Voice-first. Vision-enabled. Proactive, not reactive. Because you are more comfortable recording your family when you own what is recorded.",
-    image: "/images/products/car-ai.svg",
-    alt: "Home Companion product placeholder",
+    name: "Skills",
+    status: "BUILDING",
+    eta: "The unit of value",
+    blurb: "A capability written once against the module's sensors, not against any single platform's SDK. That is what makes it interoperable.",
   },
   {
-    key: "more",
+    key: "gimbal",
     numeral: "04",
-    name: "More to Come",
-    status: "DEV",
-    eta: "Unannounced",
-    blurb: "We are building more. When it is ready, you will hear it here first.",
-    image: "/images/products/meta-quest.svg",
-    alt: "More to Come product placeholder",
+    name: "The gimbal",
+    status: "MECHANICAL",
+    eta: "Version one",
+    blurb: "Settles level under gravity. No firmware, no calibration, no stabilisation software. Motorised only if a host proves it needs it.",
   },
 ];
 
-const COUNT_TARGET = 1800;
+// One skill. The number is the argument.
+const COUNT_TARGET = 1;
 
 export default function Products() {
   const rootRef = useRef<HTMLElement>(null);
@@ -118,11 +112,7 @@ export default function Products() {
       line.style.strokeDashoffset = `${len}`;
     });
 
-    const formatCount = (n: number) => {
-      // Round to thousands so count-up feels smooth, not jittery.
-      const rounded = Math.round(n / 1000) * 1000;
-      return rounded.toLocaleString("en-US");
-    };
+    const formatCount = (n: number) => String(Math.round(n));
 
     if (prefersReducedMotion()) {
       gsap.set(
@@ -212,7 +202,7 @@ export default function Products() {
     if (featuredTl.scrollTrigger)
       triggers.push(featuredTl.scrollTrigger as ScrollTrigger);
 
-    // 55M count-up — fires when stat enters viewport.
+    // Stat reveal — fires when stat enters viewport.
     const statObj = { value: 0 };
     const countTl = gsap.timeline({
       scrollTrigger: {
@@ -274,30 +264,30 @@ export default function Products() {
         <div className="products-section-marker flex items-center gap-4">
           <span className="block h-px w-14 bg-ink/50" aria-hidden="true" />
           <span className="font-mono text-[13px] tracking-[0.32em] uppercase text-ink">
-            § 06 · PRODUCTS
+            § 07 · THE MODULE
           </span>
         </div>
 
         <div className="mt-14 md:mt-20 max-w-[900px]">
           <span className="products-eyebrow block font-mono text-[10.5px] md:text-[11px] tracking-[0.3em] uppercase text-steel mb-5">
-            Products // 01-04 // one vision, four surfaces
+            Module // 01-04 // eyes in the box, mind in the cloud
           </span>
           <h2
             id="products-heading"
             className="font-display text-ink leading-[1.06] tracking-[-0.015em] text-[clamp(2rem,4.8vw,3.6rem)]"
           >
             <span className="products-headline-line block">
-              Four surfaces.
+              Eyes in the box.
             </span>
             <span className="products-headline-line block">
-              One <span className="text-hotrod">vision</span>.
+              Mind in the <span className="text-hotrod">cloud</span>.
             </span>
           </h2>
         </div>
 
         {/* 60 / 40 grid */}
         <div className="mt-16 md:mt-20 grid grid-cols-1 lg:grid-cols-[1.5fr_1px_1fr] gap-10 lg:gap-0">
-          {/* Featured — Flashback AI */}
+          {/* Featured — the module */}
           <Featured />
 
           {/* Vertical hairline rule (desktop only) */}
@@ -325,7 +315,7 @@ export default function Products() {
 }
 
 /* ───────────────────────────────────────────────
-   Featured block — Flashback AI
+   Featured block — the module
    ─────────────────────────────────────────────── */
 
 function Featured() {
@@ -336,59 +326,56 @@ function Featured() {
         <div className="flex items-center gap-3">
           <StatusDot />
           <span className="font-mono text-[10.5px] tracking-[0.32em] uppercase text-signal">
-            LIVE · iOS / Android
+            PROTOTYPE · MODULE
           </span>
         </div>
         <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-steel">
-          01 · flagship
+          01 · the module
         </span>
       </div>
 
       {/* Top: phone placeholder + copy */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-8 sm:gap-10 items-start">
-        {/* Phone-frame placeholder */}
+        {/* The module — a sphere wearing the loop mark as its visor */}
         <div
           className="products-featured-image relative shrink-0 mx-auto sm:mx-0"
-          style={{ width: 240, height: 492 }}
+          style={{ width: 280, height: 280 }}
         >
           {/* Drafting corner marks */}
           <CornerMarks />
-          <div className="relative w-full h-full border border-ink/70 bg-paper-raised overflow-hidden rounded-[28px]">
-            <Image
-              src="/images/products/flashback-ai.svg"
-              alt="Flashback AI product placeholder"
-              fill
-              sizes="240px"
-              className="object-cover"
-              unoptimized
+          <div className="relative w-full h-full border border-ink/70 bg-paper-raised overflow-hidden rounded-full flex items-center justify-center">
+            <TeepinMark
+              size={196}
+              className="text-ink"
+              title="The Symbian module: a sphere whose visor is the loop mark — two lenses, three lines each"
             />
-            {/* Thin inner hairline for screen bezel read */}
-            <div className="absolute inset-3 border border-hairline rounded-[20px] pointer-events-none" />
+            {/* Thin inner hairline — the gimbal ring */}
+            <div className="absolute inset-3 border border-hairline rounded-full pointer-events-none" />
           </div>
         </div>
 
         {/* Copy + bullets */}
         <div>
           <h3 className="font-display text-ink text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.08] tracking-[-0.015em]">
-            Flashback AI
+            A stabilized pair of eyes.
           </h3>
           <p className="mt-3 text-ink-soft text-[15px] leading-[1.55] max-w-[46ch]">
-            Your personal AI. Voice-first, memory-forward, encrypted
-            end-to-end. Built around the person it serves, not the cloud it
-            lives on.
+            A sphere with a visor across the front. Behind the visor, the
+            cameras. A microphone to hear you, a speaker to answer. No mouth,
+            because the speaker is the mouth.
           </p>
 
           <ul className="mt-6 space-y-3">
             {[
-              ["voice-first", "talk first, type when you must."],
+              ["visor & cameras", "the face is nothing but eyes."],
+              ["mic & speaker", "it hears you, and it answers."],
               [
-                "memory intelligence",
-                "remembers you across days, not tokens.",
+                "mechanical gimbal",
+                "holds level while the host does whatever the host does.",
               ],
-              ["legacy mode", "document a life before it fades."],
               [
-                "parenthood mode",
-                "capture what you would otherwise miss.",
+                "a radio",
+                "almost no intelligence of its own; the thinking happens elsewhere.",
               ],
             ].map(([label, body]) => (
               <li
@@ -415,7 +402,7 @@ function Featured() {
         <div className="flex items-center gap-3 mb-6">
           <span className="block h-px w-10 bg-ink/40" aria-hidden="true" />
           <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-steel">
-            flow · 04 · document → privacy
+            flow · 04 · attach → speak
           </span>
         </div>
 
@@ -425,7 +412,7 @@ function Featured() {
         <div className="mt-10 flex items-end justify-between gap-6 flex-wrap">
           <div>
             <span className="products-stat-caption block font-mono text-[10.5px] tracking-[0.3em] uppercase text-steel mb-2">
-              memories handled · live
+              skill · written once · every host
             </span>
             <span
               className="products-stat-number block font-display text-ink leading-[0.95] tracking-[-0.02em] text-[clamp(2.4rem,5.5vw,4rem)]"
@@ -435,7 +422,7 @@ function Featured() {
             </span>
           </div>
           <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-steel max-w-[22ch] text-right">
-            across paying enterprise deployments · 2026
+            the same skill on every host it meets
           </span>
         </div>
       </div>
@@ -476,7 +463,7 @@ function Flow() {
           <span>input</span>
           <span className="flex items-center gap-2 text-ink/70">
             <span className="block h-px w-10 bg-ink/30" />
-            end-to-end · private
+            host-blind · end to end
             <span className="block h-px w-10 bg-ink/30" />
           </span>
           <span>output</span>
@@ -626,8 +613,18 @@ function FlowGlyph({ kind }: { kind: FlowStep["glyph"] }) {
    ─────────────────────────────────────────────── */
 
 function SubCard({ p, first = false }: { p: SubProduct; first?: boolean }) {
-  const statusColor = p.status === "DEV" ? "text-hud-deep" : "text-steel";
-  const statusDot = p.status === "DEV" ? "bg-hud-deep" : "bg-steel";
+  const statusColor =
+    p.status === "RUNNING"
+      ? "text-signal"
+      : p.status === "BUILDING"
+        ? "text-hud-deep"
+        : "text-steel";
+  const statusDot =
+    p.status === "RUNNING"
+      ? "bg-signal"
+      : p.status === "BUILDING"
+        ? "bg-hud-deep"
+        : "bg-steel";
 
   return (
     <article
@@ -655,14 +652,10 @@ function SubCard({ p, first = false }: { p: SubProduct; first?: boolean }) {
         {/* Preview thumb — desktop only (mobile moves it below) */}
         <div className="hidden sm:block relative shrink-0 w-[104px] h-[80px]">
           <SubCornerMarks />
-          <div className="relative w-full h-full border border-ink/50 bg-paper-sunk overflow-hidden">
-            <Image
-              src={p.image}
-              alt={p.alt}
-              fill
-              sizes="104px"
-              className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.04]"
-              unoptimized
+          <div className="relative w-full h-full border border-ink/50 bg-paper-sunk overflow-hidden flex items-center justify-center">
+            <TeepinMark
+              size={72}
+              className="text-ink/70 transition-transform duration-500 group-hover:scale-[1.04]"
             />
           </div>
           <span className="block mt-1.5 font-mono text-[8.5px] tracking-[0.28em] uppercase text-steel text-right">
@@ -673,7 +666,16 @@ function SubCard({ p, first = false }: { p: SubProduct; first?: boolean }) {
 
       {/* Name */}
       <h3 className="mt-4 font-display text-ink text-[clamp(1.5rem,2vw,1.7rem)] leading-[1.06] tracking-[-0.015em]">
-        {p.name}
+        {p.href ? (
+          <a
+            href={p.href}
+            className="hover:text-hud-deep transition-colors duration-220"
+          >
+            {p.name}
+          </a>
+        ) : (
+          p.name
+        )}
       </h3>
 
       {/* Blurb */}
@@ -684,7 +686,7 @@ function SubCard({ p, first = false }: { p: SubProduct; first?: boolean }) {
       {/* Mobile preview thumb + view-spec row */}
       <div className="mt-4 flex items-end justify-between gap-4 sm:mt-3">
         <div className="flex items-center gap-2 font-mono text-[9.5px] tracking-[0.3em] uppercase text-steel opacity-70 group-hover:opacity-100 group-hover:text-ink transition-all duration-300">
-          <span>view spec</span>
+          <span>{p.href ? "visit" : "more soon"}</span>
           <span
             className="block h-px w-6 bg-current transition-all duration-300 group-hover:w-10"
             aria-hidden="true"
@@ -693,15 +695,8 @@ function SubCard({ p, first = false }: { p: SubProduct; first?: boolean }) {
 
         <div className="sm:hidden relative shrink-0 w-[96px] h-[64px]">
           <SubCornerMarks />
-          <div className="relative w-full h-full border border-ink/50 bg-paper-sunk overflow-hidden">
-            <Image
-              src={p.image}
-              alt={p.alt}
-              fill
-              sizes="96px"
-              className="object-cover opacity-90"
-              unoptimized
-            />
+          <div className="relative w-full h-full border border-ink/50 bg-paper-sunk overflow-hidden flex items-center justify-center">
+            <TeepinMark size={64} className="text-ink/70" />
           </div>
         </div>
       </div>

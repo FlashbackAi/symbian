@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * Flashback Labs — § 06 Infrastructure.
+ * Symbian — § 05 The stack.
  *
  * Centered isometric stack. Four transparent layers bottom → top:
- *   01 Data  →  02 Infrastructure  →  03 Intelligence  →  04 Verification
+ *   01 The host  →  02 The module  →  03 Teepin cloud  →  04 Skills
  *
  * The tower is always visible as a translucent wire-frame construction.
  * Internal modules are hidden by default; hovering (or tapping) a slab
@@ -46,45 +46,45 @@ const LAYERS: Layer[] = [
   {
     idx: 0,
     numeral: "01",
-    name: "Data",
-    short: "DATA",
+    name: "The host",
+    short: "HOST",
     kind: "data",
-    thesis: "Your memories live in storage you own. Encrypted. Decentralized. Portable.",
-    modules: ["Owned storage", "Encryption", "Portability"],
-    spec: "decentralized storage · encrypted · portable",
-    partners: ["Shelby", "BNB Greenfield", "0G Storage"],
+    thesis: "Whatever already moves, flies, drives — or never moves at all. The host is unchanged: as fast, as stable, as capable as the people who built it made it.",
+    modules: ["Quadruped", "Drone", "Vehicle"],
+    spec: "their strengths · untouched",
+    partners: [],
   },
   {
     idx: 1,
     numeral: "02",
-    name: "Compute",
-    short: "CMPTE",
+    name: "The module",
+    short: "MODULE",
     kind: "infra",
-    thesis: "Your devices first. Then Teepin network. Then enterprise GPUs as fallback. All inside TEEs. Every inference verifiable on-chain.",
-    modules: ["Devices", "Teepin network", "TEE GPUs"],
-    spec: "on-device · distributed · trusted execution",
-    partners: ["Teepin", "0G Compute"],
+    thesis: "A sphere with a visor across the front, cameras behind it, a microphone, a speaker — on a gimbal that keeps it level no matter what the host is doing underneath.",
+    modules: ["Visor & cameras", "Mic & speaker", "Mechanical gimbal"],
+    spec: "eyes · ears · mouth · radio",
+    partners: [],
   },
   {
     idx: 2,
     numeral: "03",
-    name: "Intelligence",
-    short: "INTEL",
+    name: "Teepin cloud",
+    short: "CLOUD",
     kind: "intelligence",
-    thesis: "Open source models running inside trusted execution environments. No black boxes. No hidden training. You choose what runs on your devices.",
-    modules: ["Open models", "TEE optimized", "No hidden training"],
-    spec: "open source · auditable · private",
-    partners: ["Qwen", "0G TEE Models"],
+    thesis: "The reasoning, the model calls, the retrieval — all of it runs on Teepin, the cloud platform our team already builds for enterprises. That is why a module this small can hold a real conversation about what it sees.",
+    modules: ["Live video reasoning", "Retrieval", "Voice in and out"],
+    spec: "where the thinking actually happens",
+    partners: ["Teepin"],
   },
   {
     idx: 3,
     numeral: "04",
-    name: "Applications",
-    short: "APPS",
+    name: "Skills",
+    short: "SKILLS",
     kind: "applications",
-    thesis: "Everything built on this stack. Our products and yours. Simple APIs. Simple SDKs. Build without compromising on ownership.",
-    modules: ["Flashback AI", "Teepin", "Catercore"],
-    spec: "built on the stack · owned by you · open to builders",
+    thesis: "A skill is a capability the module can perform — seeing, reasoning, talking — written once and interoperable across every host it is attached to.",
+    modules: ["Written once", "Runs anywhere", "Skill marketplace"],
+    spec: "interoperable by design",
     partners: [],
   },
 ];
@@ -331,29 +331,28 @@ export default function Infrastructure() {
         <div className="infra-section-marker flex items-center gap-4">
           <span className="block h-px w-14 bg-ink/50" aria-hidden="true" />
           <span className="font-mono text-[13px] tracking-[0.32em] uppercase text-ink">
-            § 04 · INFRASTRUCTURE
+            § 05 · THE STACK
           </span>
         </div>
 
         {/* Header */}
         <div className="mt-14 md:mt-20 max-w-[900px]">
           <span className="infra-eyebrow block font-mono text-[10.5px] md:text-[11px] tracking-[0.3em] uppercase text-steel mb-5">
-            Stack // 01-04 // data &gt; applications
+            Stack // 01-04 // host &gt; skills
           </span>
           <h2
             id="infra-heading"
             className="font-display text-ink leading-[1.06] tracking-[-0.015em] text-[clamp(2rem,4.8vw,3.6rem)]"
           >
             <span className="infra-headline-line block">
-              A stack that remembers.
+              One module. One cloud.
             </span>
             <span className="infra-headline-line block">
-              From data to <span className="text-hotrod">proof</span>.
+              Any <span className="text-hotrod">host</span>.
             </span>
           </h2>
           <p className="infra-headline-line mt-6 text-ink-soft text-[15px] md:text-[16px] max-w-[58ch] leading-[1.55]">
-            Verifiable and auditable on-chain across every layer. That&rsquo;s
-            not a feature. That&rsquo;s how we build.
+            The host keeps its strengths. We add the senses.
           </p>
         </div>
 
@@ -527,7 +526,7 @@ function DetailPanel({ layer }: { layer: Layer | null }) {
               </span>
               <span className="block h-px flex-1 bg-hotrod/30" />
               <span className="font-mono text-[8px] tracking-[0.26em] uppercase text-steel">
-                {layer.kind.toUpperCase()}
+                {layer.short}
               </span>
             </div>
 
@@ -608,7 +607,7 @@ function DetailPanel({ layer }: { layer: Layer | null }) {
             {/* Bottom meta row */}
             <div className="infra-panel-item mt-3 flex items-center justify-between">
               <span className="font-mono text-[8.5px] tracking-[0.32em] uppercase text-steel">
-                flashback · stack · {layer.numeral}/04
+                symbian · stack · {layer.numeral}/04
               </span>
               <div className="flex items-center gap-1.5">
                 {[0, 1, 2, 3].map((i) => (
@@ -706,7 +705,7 @@ const TowerSVG = forwardRef<SVGSVGElement, TowerProps>(function TowerSVG(
       ref={ref}
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       className="w-full h-auto max-w-none sm:max-w-[520px] lg:max-w-[600px] mx-auto block"
-      aria-label="Flashback stack — four layers, bottom to top: data, compute, intelligence, applications"
+      aria-label="Symbian stack — four layers, bottom to top: the host, the module, Teepin cloud, skills"
       onMouseLeave={onLeaveAll}
     >
       <defs>
@@ -1170,7 +1169,7 @@ function SlabTopDecor({
         opacity={active ? 1 : 0.7}
         style={{ textTransform: "uppercase" }}
       >
-        LYR · {layer.numeral} · {layer.name.slice(0, 3)}
+        LYR · {layer.numeral} · {layer.short}
       </text>
     </g>
   );
@@ -1270,7 +1269,7 @@ function VerificationRail() {
         fill="#B3111A"
         style={{ textTransform: "uppercase" }}
       >
-        VERIFIABLE · AUDITABLE · ON-CHAIN ACROSS EVERY LAYER
+        ONE SKILL · EVERY HOST · THE HOST UNCHANGED
       </text>
     </g>
   );

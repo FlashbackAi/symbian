@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Flashback Labs — ScrollReveal.
+ * Symbian — ScrollReveal.
  *
  * Scroll-driven per-word reveal. Based on React Bits ScrollReveal, extended to
  * accept React children (not just strings). Inline elements like <span> are

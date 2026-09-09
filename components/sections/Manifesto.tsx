@@ -1,9 +1,9 @@
 "use client";
 
 /**
- * Flashback Labs — § 02 Manifesto.
+ * Symbian — § 02 The problem.
  *
- * Editorial argument for personal, on-device AI. Three stanzas in an asymmetric
+ * Editorial statement of the gap Symbian fills: capable machines, no awareness. Three stanzas in an asymmetric
  * 12-col grid with per-stanza ScrollReveal (words opacity/blur/rotate-scrubbed).
  * A vertical hairline draws itself as you scroll the section.
  */
@@ -29,27 +29,28 @@ type Stanza = {
 const STANZAS: Stanza[] = [
   {
     numeral: "I",
-    label: "THE CLAIM",
+    label: "THE MACHINES",
     body: (
       <>
-        The world is racing toward autonomous AI. Agents that learn from your
-        life, then act without you. We are heading in the other direction.
+        A quadruped can cross rubble. A drone can hold position in wind. A car
+        can keep itself in a lane.
       </>
     ),
     colStart: 1,
-    calloutText: "§02.01 · CLAIM",
+    calloutText: "§02.01 · MACHINES",
     calloutSide: "right",
   },
   {
     numeral: "II",
-    label: "THE PROBLEM",
+    label: "THE GAP",
     body: (
       <>
-        When someone else owns your data, they own the terms of who you become.
+        None of them know what they&rsquo;re looking at, where they are, or what
+        you want. The hard problems got solved. Awareness never arrived.
       </>
     ),
     colStart: 6,
-    calloutText: "§02.02 · PROBLEM",
+    calloutText: "§02.02 · GAP",
     calloutSide: "left",
   },
   {
@@ -57,8 +58,8 @@ const STANZAS: Stanza[] = [
     label: "THE ANSWER",
     body: (
       <>
-        AI that runs on your device. Your memory, encrypted, anchored on-chain,
-        owned by you. It answers to you alone.And it leaves when you ask it to.
+        One small module, riding on top of what already works. Eyes, ears and
+        a voice for anything you already own.
       </>
     ),
     colStart: 1,
@@ -204,7 +205,7 @@ export default function Manifesto() {
       style={{ minHeight: "140vh" }}
     >
       <h2 id="manifesto-heading" className="sr-only">
-        Manifesto
+        The problem
       </h2>
 
       <div
@@ -216,7 +217,7 @@ export default function Manifesto() {
         <div className="manifesto-section-marker flex items-center gap-4">
           <span className="block h-px w-14 bg-ink/50" aria-hidden="true" />
           <span className="font-mono text-[13px] tracking-[0.32em] uppercase text-ink">
-            § 02 · MANIFESTO
+            § 02 · THE PROBLEM
           </span>
         </div>
 

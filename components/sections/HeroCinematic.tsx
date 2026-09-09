@@ -1,25 +1,26 @@
 "use client";
 
 /**
- * Flashback Labs — Hero (cinematic variant).
+ * Symbian — Hero (cinematic variant).
  *
- * Alt layout of Hero for A/B selection. Center-stacked; reactor sits behind
- * the headline. On mount: black viewport, oversized reactor boots, scales
- * down, background crossfades to paper, text reveals on top. Scroll drifts
- * reactor down and text up at different rates.
+ * Center-stacked; the loop mark — Symbian's visor — sits behind the
+ * headline. On mount: black viewport, the oversized mark traces itself in,
+ * scales down, background crossfades to paper, text reveals on top. Scroll
+ * drifts the mark down and text up at different rates.
  */
 
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createTimeline, stagger, utils } from "animejs";
 import { prefersReducedMotion } from "@/lib/motion";
-import ArcReactor from "../svg/ArcReactor";
+import TeepinReactor from "../svg/TeepinReactor";
 
 const HEADLINE_LINES = [
-  ["When", "autonomous", "agents"],
-  ["do", "everything,"],
-  ["who", "decides"],
-  ["what", "you", "become?"],
+  ["Eyes", "for", "everything"],
+  ["you", "already", "own."],
 ];
+
+const SERIAL_TEXT =
+  "SYMBIAN · MODULE · SERIES·S-01 · ONE SKILL · EVERY HOST · ";
 
 export default function HeroCinematic() {
   const rootRef = useRef<HTMLElement>(null);
@@ -143,7 +144,7 @@ export default function HeroCinematic() {
       3900,
     );
 
-    // HUD underline draws under "you."
+    // HUD underline draws under "own."
     if (underline) {
       tl.add(
         underline,
@@ -230,7 +231,7 @@ export default function HeroCinematic() {
     <section
       ref={rootRef}
       className="relative w-full min-h-screen overflow-hidden"
-      aria-label="Flashback Labs"
+      aria-label="Symbian"
     >
       {/* Black base layer */}
       <div
@@ -292,7 +293,7 @@ export default function HeroCinematic() {
             data-phase="black"
             style={{ transform: "scale(1.15)", transformOrigin: "center center" }}
           >
-            <ArcReactor size={640} />
+            <TeepinReactor size={640} serialText={SERIAL_TEXT} />
           </div>
         </div>
       </div>
@@ -328,7 +329,7 @@ export default function HeroCinematic() {
       >
         <span className="block h-px w-10 bg-ink/30" />
         <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-steel/80">
-          FL · V0.1
+          SB · V0.1
         </span>
         <span className="block h-px w-10 bg-ink/30" />
       </div>
@@ -339,7 +340,7 @@ export default function HeroCinematic() {
       >
         <span className="block h-px w-10 bg-ink/30" />
         <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-steel/80">
-          EST · 2024
+          EST · 2026
         </span>
         <span className="block h-px w-10 bg-ink/30" />
       </div>
@@ -355,7 +356,7 @@ export default function HeroCinematic() {
           className="font-mono text-[9px] tracking-[0.3em] uppercase text-steel/70"
           style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
         >
-          CORE · F-01
+          CORE · S-01
         </span>
         <span className="block w-px h-14 bg-ink/20" />
       </div>
@@ -369,7 +370,7 @@ export default function HeroCinematic() {
           className="font-mono text-[9px] tracking-[0.3em] uppercase text-steel/70"
           style={{ writingMode: "vertical-rl" }}
         >
-          AI · YOURS
+          HOST · YOURS
         </span>
         <span className="block w-px h-14 bg-ink/20" />
       </div>
@@ -387,7 +388,7 @@ export default function HeroCinematic() {
           >
             <span className="block h-px w-10 bg-ink/40" aria-hidden="true" />
             <span className="font-mono text-[10.5px] tracking-[0.28em] uppercase text-steel">
-              Flashback Labs
+              Symbian
             </span>
             <span className="block h-px w-10 bg-ink/40" aria-hidden="true" />
           </div>
@@ -431,10 +432,11 @@ export default function HeroCinematic() {
               className="heroc-sub mt-10 md:mt-12 max-w-xl mx-auto text-[17px] md:text-[18px] leading-[1.55] text-ink-soft"
               style={{ opacity: 0 }}
             >
-              Everyone&apos;s building AI that learns from you to do things
-              without you. We&apos;re building AI you own. Your data, your
-              models, your decisions. Because the only life worth living is one
-              you control, not one engineered by someone else&apos;s AI.
+              Symbian is a small, interoperable module you attach to a robot, a
+              drone, a vehicle, or something that never moves at all. It sees
+              what you see, works out what matters, and talks to you about it
+              &mdash; amplifying whatever host it&apos;s riding, without changing
+              what that host already does best.
             </p>
 
             <div
@@ -442,22 +444,22 @@ export default function HeroCinematic() {
               style={{ opacity: 0 }}
             >
               <a
-                href="/manifesto"
+                href="mailto:hello@symbian.world?subject=Symbian%20early%20access"
                 className="group relative inline-flex items-center justify-center px-8 py-3.5 bg-hotrod text-paper-raised font-mono text-[11px] tracking-[0.22em] uppercase overflow-hidden transition-colors duration-200 hover:bg-hotrod-deep"
                 style={{ clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)" }}
               >
                 <span aria-hidden="true" className="absolute top-0 right-0 w-2 h-2 border-t border-r border-paper-raised/40 pointer-events-none" />
-                <span style={{ display: "inline-block" }}>Read Our Thesis</span>
+                <span style={{ display: "inline-block" }}>Get early access</span>
               </a>
 
               <a
-                href="/community"
+                href="#manifesto"
                 className="group relative inline-flex items-center justify-center px-8 py-3.5 font-mono text-[11px] tracking-[0.22em] uppercase overflow-hidden transition-colors duration-200 text-ink hover:text-paper-raised"
                 style={{ clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)" }}
               >
                 <span aria-hidden="true" className="absolute inset-0 border border-ink transition-colors duration-200 group-hover:border-ink pointer-events-none" style={{ clipPath: "inherit" }} />
                 <span aria-hidden="true" className="absolute inset-0 bg-ink translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out pointer-events-none" />
-                <span className="relative z-10">Join Our Community</span>
+                <span className="relative z-10">See how it works</span>
               </a>
             </div>
           </div>
