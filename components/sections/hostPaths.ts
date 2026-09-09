@@ -154,6 +154,21 @@ export const HOST_CAPTIONS: Record<HostKey, string> = {
   shelf: "host 04 · a shelf watching a doorway",
 };
 
+/** Marginal annotation: what each host is already good at, unaided. */
+export const HOST_NAMES: Record<HostKey, string> = {
+  quadruped: "Warehouse quadruped",
+  motorcycle: "Motorcycle",
+  drone: "Quadcopter drone",
+  shelf: "Shelf by a doorway",
+};
+
+export const HOST_SPECS: Record<HostKey, string> = {
+  quadruped: "balance · gait · payload",
+  motorcycle: "speed · lean · the road",
+  drone: "lift · hover · wind",
+  shelf: "stillness · a view of the door",
+};
+
 export const HOST_ALTS: Record<HostKey, string> = {
   quadruped: "The Symbian module mounted on the back of a four-legged warehouse robot",
   motorcycle: "The Symbian module clipped above the tank of a motorcycle",
