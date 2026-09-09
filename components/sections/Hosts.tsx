@@ -3,118 +3,167 @@
 /**
  * Symbian — § 03 One skill, every host.
  *
- * The signature moment. The module — the loop mark as a visor on a sphere,
- * cradled in a gimbal ring — stays pinned dead-centre and never moves a
- * pixel. The host underneath it changes as you scroll: warehouse quadruped →
- * motorcycle → drone → a shelf watching a doorway. Sticky positioning, not
- * scroll-hijacking: the user's scroll speed stays theirs; a single GSAP
- * scrub drives host opacity and the caption. Nothing else in the section
- * animates.
+ * The signature moment. The module — a sphere wearing the loop mark as its
+ * visor, cradled in a gimbal — stays pinned dead-centre and never moves a
+ * pixel. The host underneath it MORPHS: warehouse quadruped → motorcycle →
+ * quadcopter → a shelf watching a doorway. One intelligence, many hosts,
+ * demonstrated rather than claimed.
  *
- * Reduced motion: the sticky stage is swapped for a static row of all four
- * hosts, each wearing the same module. Same argument, no movement.
+ * How the morph is built (see hostPaths.ts for the geometry rules):
+ *   - 19 semantic slots, one <path> each, one tween each. MorphSVGPlugin
+ *     re-sorts the subpaths of a compound path by bbox size, so a single
+ *     compound path per host would scramble part-to-part correspondence.
+ *   - One paused timeline: [hold .6][morph 1]×3 [hold .6]. Inside each morph
+ *     window the slots are staggered supports-first (slotStagger), which is
+ *     what keeps the midpoint frames legible instead of soup.
+ *   - ScrollTrigger with scrub: 0.8 — a numeric scrub, so stepped wheel input
+ *     is smoothed into a continuous, fully reversible morph. No pin: the stage
+ *     is CSS position:sticky, so the user's scroll speed stays theirs.
+ *   - The mount plate (s02) lands on y=242 in every host, and the module lives
+ *     in its own untouched <svg> above the host layer — it is pinned by
+ *     construction, not by animation.
+ *   - A hairline crosshair blinks at the mount point during each morph: the
+ *     one fixed thing while everything else changes.
  *
- * Hosts are hand-drawn line art in one shared 600×420 plate; the module's
- * mount point is (300, 242) in every drawing so the stack always lines up.
+ * prefers-reduced-motion: no GSAP at all (gated by gsap.matchMedia). The
+ * sticky stage is replaced by a static row of all four hosts, each wearing the
+ * same module. Same argument, no movement.
  */
 
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { prefersReducedMotion } from "@/lib/motion";
+import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
+import {
+  HOSTS,
+  HOST_ORDER,
+  HOST_CAPTIONS,
+  HOST_ALTS,
+  SLOTS,
+  slotStagger,
+  type HostKey,
+} from "./hostPaths";
 import { MARK_PATH, MARK_BARS, MARK_STROKE, MARK_W, MARK_H } from "../svg/TeepinMark";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
-type HostKey = "quadruped" | "motorcycle" | "drone" | "shelf";
-
-type Host = {
-  key: HostKey;
-  caption: string;
-  alt: string;
-};
-
-const HOSTS: Host[] = [
-  {
-    key: "quadruped",
-    caption: "host 01 · warehouse quadruped",
-    alt: "A four-legged robot with the Symbian module mounted on its back",
-  },
-  {
-    key: "motorcycle",
-    caption: "host 02 · motorcycle",
-    alt: "A motorcycle with the Symbian module clipped above the tank",
-  },
-  {
-    key: "drone",
-    caption: "host 03 · drone",
-    alt: "A quadcopter drone carrying the Symbian module on top",
-  },
-  {
-    key: "shelf",
-    caption: "host 04 · a shelf watching a doorway",
-    alt: "The Symbian module sitting on a wall shelf beside a doorway",
-  },
-];
-
-/* Plate geometry — shared by every drawing. */
+/* Plate geometry — shared by the host layer and the module layer. */
 const VB_W = 600;
 const VB_H = 420;
 const MX = 300; // module centre x
 const MY = 150; // module centre y
 const SPHERE_R = 64;
 const RING_R = 82;
+const MOUNT_Y = 242; // the surface every host presents to the gimbal stem
 
-// Visor: the loop mark scaled to sit across the sphere's face.
+// Visor: the loop mark scaled across the sphere's face.
 const VISOR_W = 118;
 const VISOR_SCALE = VISOR_W / MARK_W;
 const VISOR_TX = MX - VISOR_W / 2;
 const VISOR_TY = MY - (MARK_H * VISOR_SCALE) / 2;
 
+/* Timeline shape, in arbitrary units. */
+const HOLD = 0.6;
+const MORPH = 1;
+const TOTAL = HOLD * 4 + MORPH * 3; // 5.4
+
+/** Caption switches at each morph's midpoint. */
+function hostIndexAt(t: number): number {
+  if (t < HOLD + MORPH / 2) return 0;
+  if (t < HOLD * 2 + MORPH * 1.5) return 1;
+  if (t < HOLD * 3 + MORPH * 2.5) return 2;
+  return 3;
+}
+
 export default function Hosts() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const hostRefs = useRef<(SVGSVGElement | null)[]>([]);
+  const rootRef = useRef<HTMLElement>(null);
+  const runwayRef = useRef<HTMLDivElement>(null);
+  const hostGroupRef = useRef<SVGGElement>(null);
+  const crossRef = useRef<SVGGElement>(null);
   const captionRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    if (prefersReducedMotion()) return;
+    const runway = runwayRef.current;
+    const group = hostGroupRef.current;
+    if (!runway || !group) return;
 
-    const hosts = hostRefs.current.filter(Boolean) as SVGSVGElement[];
-    const caption = captionRef.current;
-    const last = HOSTS.length - 1;
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-    // Crossfade with a short plateau on each host so every one gets a beat.
-    const apply = (p: number) => {
-      const t = p * last;
-      hosts.forEach((el, i) => {
-        const d = Math.abs(t - i);
-        const o = Math.max(0, Math.min(1, (1 - d) * 1.8));
-        el.style.opacity = String(o);
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tl = gsap.timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: runway,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.8,
+          },
+        });
+
+        // Three morph windows, each staggered supports-first.
+        for (let i = 0; i < HOST_ORDER.length - 1; i++) {
+          const to = HOSTS[HOST_ORDER[i + 1]];
+          const at = HOLD * (i + 1) + MORPH * i;
+
+          for (const slot of SLOTS) {
+            const el = group.querySelector<SVGPathElement>(`[data-slot="${slot}"]`);
+            if (!el) continue;
+            const { at: offset, duration } = slotStagger(slot);
+            tl.to(
+              el,
+              {
+                duration,
+                ease: "power2.inOut",
+                morphSVG: { shape: to[slot], type: "linear", shapeIndex: "auto" },
+              },
+              at + offset,
+            );
+          }
+
+          // The crosshair marks the one thing that isn't moving.
+          if (crossRef.current) {
+            tl.to(crossRef.current, { opacity: 1, duration: 0.2 }, at)
+              .to(crossRef.current, { opacity: 0, duration: 0.25 }, at + MORPH - 0.25);
+          }
+        }
+
+        // A no-op tail tween so the last host gets a real hold at the end of
+        // the runway. Without it the timeline's duration is set by the final
+        // morph (4.8), the shelf never settles, and every caption fires early.
+        tl.to({}, { duration: HOLD }, HOLD * 3 + MORPH * 3);
+
+        // Pre-init every tween so the first scrub is not the first render.
+        tl.progress(1, true).progress(0, true);
+
+        // Caption is driven straight from the timeline — never React state.
+        let shown = -1;
+        const sync = () => {
+          const idx = hostIndexAt(tl.progress() * TOTAL);
+          if (idx !== shown && captionRef.current) {
+            shown = idx;
+            captionRef.current.textContent = HOST_CAPTIONS[HOST_ORDER[idx]];
+          }
+        };
+        tl.eventCallback("onUpdate", sync);
+        sync();
+
+        return () => {
+          tl.eventCallback("onUpdate", null);
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
       });
-      if (caption) {
-        const idx = Math.max(0, Math.min(last, Math.round(t)));
-        caption.textContent = HOSTS[idx].caption;
-      }
-    };
 
-    apply(0);
-    const st = ScrollTrigger.create({
-      trigger: wrap,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
-      onUpdate: (self) => apply(self.progress),
-    });
+      return () => mm.revert();
+    }, rootRef);
 
-    return () => {
-      st.kill();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
+      ref={rootRef}
       id="hosts"
       aria-labelledby="hosts-heading"
       className="relative w-full bg-paper"
@@ -153,32 +202,54 @@ export default function Hosts() {
         </div>
       </div>
 
-      {/* Sticky stage — the module holds still; the host changes beneath it */}
+      {/* Sticky stage — the host morphs; the module holds still */}
       <div
-        ref={wrapRef}
+        ref={runwayRef}
+        id="hosts-runway"
         className="relative motion-reduce:hidden"
-        style={{ height: "320vh" }}
+        style={{ height: "460vh" }}
       >
         <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
           <div
-            className="relative w-[min(92vw,640px)]"
+            className="relative w-[min(92vw,660px)]"
             style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
           >
-            {HOSTS.map((h, i) => (
-              <svg
-                key={h.key}
-                ref={(el) => {
-                  hostRefs.current[i] = el;
-                }}
-                viewBox={`0 0 ${VB_W} ${VB_H}`}
-                className="absolute inset-0 w-full h-full text-steel"
-                aria-hidden="true"
-                style={{ opacity: i === 0 ? 1 : 0 }}
+            {/* Host layer — 19 slots, each morphing independently */}
+            <svg
+              viewBox={`0 0 ${VB_W} ${VB_H}`}
+              className="absolute inset-0 w-full h-full text-steel"
+              aria-hidden="true"
+            >
+              <g
+                ref={hostGroupRef}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <HostArt kind={h.key} />
-              </svg>
-            ))}
-            {/* The module layer — one element, never re-rendered, never moved */}
+                {SLOTS.map((slot) => (
+                  <path key={slot} data-slot={slot} d={HOSTS.quadruped[slot]} />
+                ))}
+              </g>
+              {/* Mount crosshair — visible only while a host is changing */}
+              <g
+                ref={crossRef}
+                fill="none"
+                stroke="var(--color-hud)"
+                strokeWidth="1"
+                opacity="0"
+              >
+                <path d={`M ${MX - 14} ${MOUNT_Y} H ${MX + 14}`} />
+                <path d={`M ${MX} ${MOUNT_Y - 14} V ${MOUNT_Y + 14}`} />
+                <path
+                  d={`M ${MX} ${MOUNT_Y - 7} A 7 7 0 0 1 ${MX} ${MOUNT_Y + 7} A 7 7 0 0 1 ${MX} ${MOUNT_Y - 7} Z`}
+                  strokeOpacity="0.55"
+                />
+              </g>
+            </svg>
+
+            {/* Module layer — its own <svg>, never touched by the timeline */}
             <svg
               viewBox={`0 0 ${VB_W} ${VB_H}`}
               className="absolute inset-0 w-full h-full pointer-events-none"
@@ -190,26 +261,36 @@ export default function Hosts() {
           </div>
 
           <p className="mt-6 md:mt-8 font-mono text-[10.5px] tracking-[0.3em] uppercase text-steel">
-            <span ref={captionRef}>{HOSTS[0].caption}</span>
+            <span ref={captionRef}>{HOST_CAPTIONS.quadruped}</span>
           </p>
         </div>
       </div>
 
       {/* Reduced-motion fallback — same argument, no movement */}
       <div className="hidden motion-reduce:grid relative mx-auto max-w-[1280px] px-6 md:px-14 mt-16 grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-        {HOSTS.map((h) => (
-          <figure key={h.key} className="m-0">
+        {HOST_ORDER.map((key) => (
+          <figure key={key} className="m-0">
             <svg
               viewBox={`0 0 ${VB_W} ${VB_H}`}
               className="w-full h-auto text-steel"
               role="img"
-              aria-label={h.alt}
+              aria-label={HOST_ALTS[key]}
             >
-              <HostArt kind={h.key} />
+              <g
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {SLOTS.map((slot) => (
+                  <path key={slot} d={HOSTS[key][slot]} />
+                ))}
+              </g>
               <ModuleArt />
             </svg>
             <figcaption className="mt-3 font-mono text-[9.5px] tracking-[0.28em] uppercase text-steel text-center">
-              {h.caption}
+              {HOST_CAPTIONS[key]}
             </figcaption>
           </figure>
         ))}
@@ -227,14 +308,14 @@ export default function Hosts() {
 }
 
 /* ───────────────────────────────────────────────
-   The module — sphere, visor, gimbal cradle.
-   Drawn in ink so it reads above the steel hosts.
+   The module — sphere, loop-mark visor, gimbal cradle.
+   Drawn in ink so it reads above the steel host.
    ─────────────────────────────────────────────── */
 
 function ModuleArt() {
   return (
     <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-      {/* Gimbal cradle — lower semicircle + two pivots + stem to the mount */}
+      {/* Gimbal cradle — lower semicircle, two pivots, stem to the mount */}
       <path
         d={`M ${MX - RING_R} ${MY} A ${RING_R} ${RING_R} 0 0 0 ${MX + RING_R} ${MY}`}
         stroke="var(--color-ink)"
@@ -244,7 +325,7 @@ function ModuleArt() {
       <circle cx={MX - RING_R} cy={MY} r="4" fill="var(--color-ink)" />
       <circle cx={MX + RING_R} cy={MY} r="4" fill="var(--color-ink)" />
       <path
-        d={`M ${MX} ${MY + RING_R} V 242`}
+        d={`M ${MX} ${MY + RING_R} V ${MOUNT_Y}`}
         stroke="var(--color-ink)"
         strokeOpacity="0.55"
         strokeWidth="1.5"
@@ -286,115 +367,4 @@ function ModuleArt() {
   );
 }
 
-/* ───────────────────────────────────────────────
-   Hosts — hairline line art, all mounting at (300, 242).
-   ─────────────────────────────────────────────── */
-
-function HostArt({ kind }: { kind: HostKey }) {
-  const common = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.5,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-
-  switch (kind) {
-    case "quadruped":
-      return (
-        <g {...common}>
-          {/* mount plate */}
-          <path d="M 282 242 V 236 H 318 V 242" />
-          {/* body */}
-          <rect x="190" y="242" width="220" height="62" rx="14" />
-          <line x1="205" y1="273" x2="395" y2="273" strokeOpacity="0.35" />
-          {/* head */}
-          <path d="M 410 252 L 448 244 L 454 270 L 416 278 Z" />
-          <circle cx="440" cy="257" r="3" fill="currentColor" />
-          {/* legs — front pair, back pair */}
-          <path d="M 218 304 L 204 352 L 226 396" />
-          <path d="M 250 304 L 244 352 L 258 396" />
-          <path d="M 350 304 L 364 352 L 344 396" />
-          <path d="M 382 304 L 392 352 L 372 396" />
-          {/* feet */}
-          <path d="M 220 396 H 234 M 252 396 H 266 M 336 396 H 350 M 364 396 H 378" />
-          {/* ground */}
-          <line x1="120" y1="400" x2="480" y2="400" strokeOpacity="0.4" />
-        </g>
-      );
-    case "motorcycle":
-      return (
-        <g {...common}>
-          {/* mount stem to the tank */}
-          <path d="M 300 242 V 252" />
-          {/* wheels */}
-          <circle cx="175" cy="335" r="48" />
-          <circle cx="175" cy="335" r="12" />
-          <circle cx="425" cy="335" r="48" />
-          <circle cx="425" cy="335" r="12" />
-          {/* frame */}
-          <path d="M 175 335 L 235 262 L 330 262 L 372 300 L 425 335" />
-          <path d="M 235 262 L 205 335" />
-          <path d="M 330 262 L 300 335" strokeOpacity="0.5" />
-          {/* tank + seat */}
-          <path d="M 252 262 Q 300 232 336 262" />
-          <path d="M 232 258 L 292 250" />
-          {/* fork + handlebar */}
-          <path d="M 425 335 L 392 248" />
-          <path d="M 378 250 L 410 246" />
-          {/* ground */}
-          <line x1="100" y1="383" x2="500" y2="383" strokeOpacity="0.4" />
-        </g>
-      );
-    case "drone":
-      return (
-        <g {...common}>
-          {/* body — the module sits directly on it */}
-          <rect x="258" y="242" width="84" height="28" rx="10" />
-          {/* arms */}
-          <path d="M 262 256 L 158 222 M 338 256 L 442 222" />
-          <path d="M 262 256 L 158 292 M 338 256 L 442 292" />
-          {/* rotors */}
-          {[
-            [158, 222],
-            [442, 222],
-            [158, 292],
-            [442, 292],
-          ].map(([cx, cy]) => (
-            <g key={`${cx}-${cy}`}>
-              <ellipse cx={cx} cy={cy} rx="46" ry="8" strokeOpacity="0.7" />
-              <circle cx={cx} cy={cy} r="5" />
-            </g>
-          ))}
-          {/* landing legs */}
-          <path d="M 276 270 L 266 302 M 324 270 L 334 302" />
-          {/* shadow */}
-          <ellipse
-            cx="300"
-            cy="400"
-            rx="90"
-            ry="6"
-            strokeOpacity="0.35"
-            strokeDasharray="3 6"
-          />
-        </g>
-      );
-    case "shelf":
-      return (
-        <g {...common}>
-          {/* shelf under the module */}
-          <rect x="232" y="242" width="136" height="8" />
-          <path d="M 252 250 V 278 L 280 250" />
-          <path d="M 348 250 V 278 L 320 250" />
-          {/* wall line the shelf hangs on */}
-          <line x1="110" y1="400" x2="110" y2="90" strokeOpacity="0.35" />
-          {/* doorway, off to the right — what the module is watching */}
-          <path d="M 400 400 V 104 H 546 V 400" />
-          <path d="M 414 400 V 118 H 532 V 400" strokeOpacity="0.45" />
-          <circle cx="522" cy="262" r="3" fill="currentColor" />
-          {/* ground */}
-          <line x1="80" y1="400" x2="560" y2="400" strokeOpacity="0.4" />
-        </g>
-      );
-  }
-}
+export type { HostKey };
