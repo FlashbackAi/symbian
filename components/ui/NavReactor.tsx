@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Flashback Labs — NavReactor.
+ * Symbian — NavReactor.
  *
  * Right-edge reactor dial + curved HTML label arc on its left.
  *

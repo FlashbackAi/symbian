@@ -1,5 +1,5 @@
 /**
- * Flashback Labs — motion tokens.
+ * Symbian — motion tokens.
  * Centralize duration + easing so we don't hardcode ms values in components.
  */
 

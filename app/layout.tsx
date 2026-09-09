@@ -36,12 +36,14 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://flashbacklabs.com";
-const siteName = "Flashback Labs";
+const siteUrl = "https://symbian.world";
+const siteName = "Symbian";
 const siteTitle =
-  "Flashback Labs | Private Personal AI for Memory and Context";
+  "Symbian — An interoperable pair of eyes for anything you already own";
 const siteDescription =
-  "Flashback Labs builds private, human-controlled personal AI with long-term memory, local-first infrastructure, and context that stays under your control.";
+  "Symbian is an interoperable module that attaches to any host — robot, drone, vehicle, or something that never moves — and gives it sight, hearing and a voice through Teepin's cloud.";
+const contactEmail = "hello@symbian.world";
+const xUrl = "https://x.com/SymbianRobotics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -52,20 +54,20 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   keywords: [
+    "Symbian",
+    "interoperable perception",
+    "robot perception module",
+    "skills",
+    "Teepin",
     "Flashback Labs",
-    "Flashback AI",
-    "personal AI",
-    "private AI",
-    "AI memory",
-    "local-first AI",
-    "human-controlled AI",
-    "personal assistant AI",
-    "context engine",
-    "on-device AI",
+    "drone",
+    "quadruped",
+    "machine vision",
+    "voice",
   ],
-  authors: [{ name: siteName, url: siteUrl }],
-  creator: siteName,
-  publisher: siteName,
+  authors: [{ name: "Flashback Labs", url: siteUrl }],
+  creator: "Flashback Labs",
+  publisher: "Flashback Labs",
   category: "technology",
   alternates: {
     canonical: "/",
@@ -82,9 +84,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [{ url: "/flashback.jpg", type: "image/jpeg" }],
-    shortcut: [{ url: "/flashback.jpg", type: "image/jpeg" }],
-    apple: [{ url: "/flashback.jpg", type: "image/jpeg" }],
+    icon: [{ url: "/symbian-mark.svg", type: "image/svg+xml" }],
+    shortcut: [{ url: "/symbian-mark.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/symbian-mark.svg", type: "image/svg+xml" }],
   },
   openGraph: {
     title: siteTitle,
@@ -93,21 +95,22 @@ export const metadata: Metadata = {
     siteName,
     images: [
       {
-        url: "/flashback.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Flashback Labs logo",
-        type: "image/jpeg",
+        url: "/symbian-mark.svg",
+        width: 320,
+        height: 120,
+        alt: "The Symbian loop mark — two lenses, three lines each",
+        type: "image/svg+xml",
       },
     ],
     locale: "en_US",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
+    site: "@SymbianRobotics",
     title: siteTitle,
     description: siteDescription,
-    images: ["/flashback.jpg"],
+    images: ["/symbian-mark.svg"],
   },
   formatDetection: {
     telephone: false,
@@ -124,8 +127,14 @@ const structuredData = {
       "@id": `${siteUrl}/#organization`,
       name: siteName,
       url: siteUrl,
-      logo: `${siteUrl}/flashback.jpg`,
+      logo: `${siteUrl}/symbian-mark.svg`,
       description: siteDescription,
+      email: contactEmail,
+      sameAs: [xUrl],
+      parentOrganization: {
+        "@type": "Organization",
+        name: "Flashback Labs",
+      },
     },
     {
       "@type": "WebSite",
@@ -137,19 +146,6 @@ const structuredData = {
         "@id": `${siteUrl}/#organization`,
       },
       inLanguage: "en-US",
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": `${siteUrl}/#flashback-ai`,
-      name: "Flashback AI",
-      applicationCategory: "ProductivityApplication",
-      operatingSystem: "iOS, Android, Web",
-      description:
-        "A private personal AI assistant focused on memory, context, and human-controlled workflows.",
-      publisher: {
-        "@id": `${siteUrl}/#organization`,
-      },
-      url: siteUrl,
     },
   ],
 };

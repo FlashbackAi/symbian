@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Flashback Labs — § 04 Design Principles.
+ * Symbian — § 04 Skills: why one skill works everywhere.
  *
  * Four circular "bubbles" arranged in a 2×2 bento. Variety comes from
  * diameter differences, not shape irregularity — the unevenness is the
@@ -39,9 +39,9 @@ type Principle = {
 const PRINCIPLES: Principle[] = [
   {
     numeral: "01",
-    name: "Nonautonomous",
+    name: "Interoperable by design",
     description:
-      "AI that asks, not one that acts without you. Every decision stays yours.",
+      "A skill is written against the module's eyes and ears, not any one platform's SDK. It doesn't need rewriting to ride something new.",
     accentHex: "#0369A1",
     size: 420,
     rotate: -3,
@@ -50,9 +50,9 @@ const PRINCIPLES: Principle[] = [
   },
   {
     numeral: "02",
-    name: "Private by Default",
+    name: "It amplifies the host",
     description:
-      "Your data lives on your devices, encrypted. We never see it, never sell it.",
+      "The robot keeps doing exactly what it was built to do. Symbian adds perception on top and makes the platform more capable.",
     accentHex: "#8B6914",
     size: 340,
     rotate: 2.5,
@@ -61,9 +61,9 @@ const PRINCIPLES: Principle[] = [
   },
   {
     numeral: "03",
-    name: "User-Owned",
+    name: "The host can change",
     description:
-      "Keys, models, logs - all yours. No rented intelligence, no leased memory.",
+      "A quadruped today, a motorcycle tomorrow, a shelf watching a doorway after that. The module doesn't need to know what it's riding.",
     accentHex: "#B3111A",
     size: 360,
     rotate: 3,
@@ -72,9 +72,9 @@ const PRINCIPLES: Principle[] = [
   },
   {
     numeral: "04",
-    name: "Auditable",
+    name: "Built with platforms, not against them",
     description:
-      "Every action traceable. Nothing happens off-record. Open by construction.",
+      "We're not a robotics company. We collaborate with the companies who spent a decade solving locomotion, and co-build where it helps both of us.",
     accentHex: "#2E8B57",
     size: 500,
     rotate: -2,
@@ -222,23 +222,23 @@ export default function Principles() {
         <div className="principles-section-marker flex items-center gap-4">
           <span className="block h-px w-14 bg-ink/50" aria-hidden="true" />
           <span className="font-mono text-[13px] tracking-[0.32em] uppercase text-ink">
-            § 03 · PRINCIPLES
+            § 04 · SKILLS
           </span>
         </div>
 
         <div className="mt-14 md:mt-20 max-w-[820px]">
           <span className="principles-heading block font-mono text-[10.5px] md:text-[11px] tracking-[0.3em] uppercase text-steel mb-5">
-            Design principles // 01–04 // rules we won&rsquo;t break
+            Skills // 01–04 // why one skill works everywhere
           </span>
           <h2
             id="principles-heading"
             className="principles-heading font-display text-ink leading-[1.06] tracking-[-0.015em] text-[clamp(2rem,4.8vw,3.6rem)]"
           >
-            Four promises we won&rsquo;t break.
+            Written once. Runs on whatever it&rsquo;s riding.
           </h2>
           <p className="principles-heading mt-6 text-ink-soft text-[15px] md:text-[16px] max-w-[56ch] leading-[1.55]">
-            Not guidelines. Not goals. Rules we&rsquo;ve designed every product
-            around from day one.
+            A skill is a capability the module can perform &mdash; seeing,
+            reasoning, talking. It belongs to the module, not to any platform.
           </p>
         </div>
 

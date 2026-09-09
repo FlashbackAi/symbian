@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer
-      aria-label="Flashback Labs site footer"
+      aria-label="Symbian site footer"
       className="relative w-full min-h-[50vh] bg-paper border-t border-hairline"
     >
       {/* hairline dot grid — matches engineering-drawing texture on the rest of the site */}
@@ -16,7 +16,7 @@ export default function Footer() {
       />
 
       <div className="relative mx-auto max-w-7xl px-6 md:px-10 py-14 md:py-16 flex flex-col md:flex-row md:items-center gap-12 md:gap-16">
-        {/* Left (desktop) / top (mobile) — Hydrogen wordmark */}
+        {/* Left (desktop) / top (mobile) — Nevera wordmark */}
         <div
           className="w-full md:w-[55%] md:shrink-0"
           style={{ containerType: "inline-size" }}
@@ -28,28 +28,39 @@ export default function Footer() {
               fontSize: "clamp(1rem, 10cqw, 5rem)",
             }}
           >
-            flashbacklabs
+            symbian
           </span>
         </div>
 
         {/* Right (desktop) / bottom (mobile) — content */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <p className="font-mono text-[10.5px] tracking-[0.28em] uppercase text-steel text-center md:text-left">
-            § FLASHBACK LABS
+            § SYMBIAN
           </p>
           <div className="border-t border-hairline my-5 w-full max-w-lg mx-auto md:mx-0 md:max-w-none" />
 
+          <p className="text-ink-soft text-[14px] leading-[1.6] text-center md:text-left max-w-[52ch] mx-auto md:mx-0">
+            Symbian is built by Flashback Labs, the team behind{" "}
+            <a
+              href="https://teepin.com"
+              className="text-ink underline decoration-hairline underline-offset-4 hover:decoration-ink transition-colors duration-220"
+            >
+              Teepin
+            </a>
+            .
+          </p>
+
           {/* Link grid — 2 columns, left on desktop, stacks+centers on mobile */}
-          <div className="flex flex-col sm:flex-row gap-10 sm:gap-16 justify-center md:justify-start items-center sm:items-start">
+          <div className="mt-10 flex flex-col sm:flex-row gap-10 sm:gap-16 justify-center md:justify-start items-center sm:items-start">
             <div className="text-center sm:text-left">
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-steel mb-3">
-                Product
+                Symbian
               </p>
               <ul className="flex flex-col gap-2">
                 {[
-                  { label: "Get Flashback AI", href: "#products" },
-                  { label: "How it works",     href: "#infrastructure" },
-                  { label: "Principles",       href: "#principles" },
+                  { label: "Skills",     href: "#principles" },
+                  { label: "The stack",  href: "#infrastructure" },
+                  { label: "The module", href: "#products" },
                 ].map(({ label, href }) => (
                   <li key={label}>
                     <a
@@ -68,9 +79,9 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-2">
                 {[
-                  { label: "About",   href: "/manifesto" },
-                  { label: "Contact", href: "mailto:contact@flashbacklabs.com" },
-                  { label: "Press",   href: "/press" },
+                  { label: "Partners", href: "#partners" },
+                  { label: "Teepin",   href: "https://teepin.com" },
+                  { label: "Contact",  href: "mailto:hello@symbian.world" },
                 ].map(({ label, href }) => (
                   <li key={label}>
                     <a
@@ -87,38 +98,30 @@ export default function Footer() {
 
           {/* Socials */}
           <div className="flex items-center justify-center md:justify-start gap-6 mt-10">
-            <span
-              aria-label="Flashback Labs on X (Twitter)"
-              aria-disabled="true"
-              className="flex items-center gap-2 font-mono text-[11px] tracking-widest text-steel/50 cursor-not-allowed"
+            <a
+              href="https://x.com/SymbianRobotics"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Symbian on X (Twitter)"
+              className="flex items-center gap-2 font-mono text-[11px] tracking-widest text-steel hover:text-ink transition-colors duration-220"
             >
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.265 5.638 5.9-5.638Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
               X / Twitter
-            </span>
-            <span
-              aria-label="Flashback Labs on LinkedIn"
-              aria-disabled="true"
-              className="flex items-center gap-2 font-mono text-[11px] tracking-widest text-steel/50 cursor-not-allowed"
-            >
-              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-              </svg>
-              LinkedIn
-            </span>
+            </a>
           </div>
 
           {/* Bottom row */}
           <div className="mt-12 pt-5 border-t border-hairline flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center">
             <p className="font-mono text-[10px] tracking-[0.15em] text-steel">
-              © 2026 Flashback Labs
+              © 2026 Symbian
             </p>
             <a
-              href="mailto:contact@flashbacklabs.com"
+              href="mailto:hello@symbian.world"
               className="font-mono text-[10px] tracking-[0.15em] text-steel hover:text-ink transition-colors duration-220"
             >
-              contact@flashbacklabs.com
+              hello@symbian.world
             </a>
           </div>
         </div>

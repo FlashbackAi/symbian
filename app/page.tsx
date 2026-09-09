@@ -1,11 +1,12 @@
 import Nav from "@/components/ui/Nav";
 import Hero from "@/components/sections/HeroCinematic";
 import Manifesto from "@/components/sections/Manifesto";
-import Thesis from "@/components/sections/Thesis";
+import Hosts from "@/components/sections/Hosts";
 import Principles from "@/components/sections/Principles";
-import Products from "@/components/sections/Products";
 import Infrastructure from "@/components/sections/Infrastructure";
-import EnterpriseProof from "@/components/sections/EnterpriseProof";
+import Thesis from "@/components/sections/Thesis";
+import Products from "@/components/sections/Products";
+import Partners from "@/components/sections/EnterpriseProof";
 import ClosingManifesto from "@/components/sections/ClosingManifesto";
 import Footer from "@/components/sections/Footer";
 
@@ -15,11 +16,12 @@ export default function Home() {
       <Nav />
       <Hero />
       <Manifesto />
+      <Hosts />
       <Principles />
       <Infrastructure />
       <Thesis />
       <Products />
-      <EnterpriseProof />
+      <Partners />
       <ClosingManifesto />
       <Footer />
     </main>

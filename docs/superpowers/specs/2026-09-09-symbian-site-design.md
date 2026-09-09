@@ -77,7 +77,7 @@ Section markers renumber to match (§ 02 … § 09).
 - H2: `One module. One cloud.` / `Any host.` (hotrod on `host`)
 - Sub: `The host keeps its strengths. We add the senses.`
 - Layers bottom→top (name · thesis · modules · spec · partners):
-  - 01 `The host` · `Whatever already moves, flies, drives or stands still. Unchanged.` · [`Quadruped`, `Drone`, `Vehicle`, `Fixed mount`] · `their strengths · untouched` · []
+  - 01 `The host` · `Whatever already moves, flies, drives or stands still. Unchanged.` · [`Quadruped`, `Drone`, `Vehicle`] · `their strengths · untouched` (three modules — the panel's module grid is 3-up) · []
   - 02 `The module` · `A sphere with a visor, cameras behind it, a microphone, a speaker — on a gimbal that keeps it level.` · [`Visor & cameras`, `Mic & speaker`, `Mechanical gimbal`] · `eyes · ears · mouth · radio` · []
   - 03 `Teepin cloud` · `The reasoning, the model calls, the retrieval — all of it runs on Teepin, the platform our team already builds for enterprises.` · [`Live video reasoning`, `Retrieval`, `Voice in and out`] · `where the thinking actually happens` · [`Teepin`]
   - 04 `Skills` · `A capability written once and interoperable across every host it's attached to.` · [`Written once`, `Runs anywhere`, `Skill marketplace`] · `interoperable by design` · []
@@ -100,12 +100,13 @@ Section markers renumber to match (§ 02 … § 09).
 - Flow `attach → speak`: 01 `Attach` · `mount · level · pair` (lock) / 02 `See` · `look · sample · notice` (signal) / 03 `Reason` · `think · retrieve · decide` (hammer) / 04 `Speak` · `answer · or stay quiet` (mic)
 - Stat: `1` with caption `skill · written once · every host` (no counter).
 - Rows `index · 02 → 04`: 02 `Teepin cloud` · status `RUNNING` · `The platform we already build for enterprises.` · `Where the thinking happens — the reasoning, the model calls, the retrieval.` (links teepin.com) / 03 `Skills` · `BUILDING` · `The unit of value` · `Written against the module's sensors, not a platform's SDK.` / 04 `The gimbal` · `MECHANICAL` · `Version one` · `Settles level under gravity. No firmware, no calibration. Motorised only if a host proves it needs it.`
-- Row images: render `TeepinMark` small in the existing frame. No new raster assets; the Flashback product SVGs are deleted.
+- Row images: render `TeepinMark` small in the existing frame. No new raster assets; the Flashback product SVGs are deleted. The Teepin cloud row links to teepin.com (`visit`); the others read `more soon`.
+- Tower slab labels use `layer.short` (HOST / MODULE / CLOUD / SKILLS); the vertical rail reads `ONE SKILL · EVERY HOST · THE HOST UNCHANGED`.
 
 ### 08 EnterpriseProof → Partners / what we don't build
 - Marker `§ 08 · WHAT WE DON'T BUILD`
 - Mono headline: `WE DIDN'T SOLVE WALKING. SOMEBODY ELSE DID.`
-- Boxes (monogram · name · what they solved): `BD` · Boston Dynamics · `balance` / `DJI` · DJI · `flight` / `UT` · Unitree · `affordable legs` / `AUTO` · Automakers · `the car`. Framed as respect, not clients.
+- Boxes (numeral · solved problem · detail): `01` · Balance · `crossing rubble on legs` / `02` · Flight · `holding position in wind` / `03` · Legs · `cheap and capable` / `04` · The car · `keeping itself in a lane`. **No company names anywhere on the site** (decided 2026-09-09) — the problems are named, the people who solved them are not.
 - Tagline: `Symbian has no motors that move it, no chassis, no drivetrain, and no opinion about how your host gets from one place to another. The only moving part we care about is the gimbal that keeps the cameras level.`
 - Below, H2 `We don't compete with the hosts we ride on.` and the five promises as a hairline list:
   1. `We don't build robots` — `No legs, no rotors, no chassis, no drivetrain. The physical machine stays entirely the platform's work.`

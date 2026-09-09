@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * Flashback Labs — § 03 Thesis / Position.
+ * Symbian — § 06 Position.
  *
- * The amplification-zone diagram IS the section. Manifesto made the argument;
- * this locates Flashback on the spectrum. Track + zones reveal on entry;
+ * The interoperability plate IS the section. The problem made the argument;
+ * this locates Symbian on the axis of hosts supported. Track + zones reveal on entry;
  * the HUD marker scrubs with scroll toward its 30% rest-position and then
  * breathes in place.
  */
@@ -17,7 +17,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 gsap.registerPlugin(ScrollTrigger);
 
 type Zone = {
-  key: "assist" | "amplify" | "automate" | "replace";
+  key: "one" | "two" | "four" | "every";
   label: string;
   caption: string;
   start: number;
@@ -27,40 +27,40 @@ type Zone = {
 
 const ZONES: Zone[] = [
   {
-    key: "assist",
-    label: "ASSIST",
-    caption: "tools that do a task for you",
+    key: "one",
+    label: "ONE PLATFORM",
+    caption: "one team, one codebase",
     start: 0,
     end: 25,
     tint: "hairline",
   },
   {
-    key: "amplify",
-    label: "AMPLIFY",
-    caption: "tools that make you better at a task",
+    key: "two",
+    label: "TWO PLATFORMS",
+    caption: "nearly double the maintenance",
     start: 25,
     end: 50,
-    tint: "hud",
-  },
-  {
-    key: "automate",
-    label: "AUTOMATE",
-    caption: "tools that do the task without you",
-    start: 50,
-    end: 80,
     tint: "hairline",
   },
   {
-    key: "replace",
-    label: "REPLACE",
-    caption: "tools that don't need you at all",
+    key: "four",
+    label: "FOUR PLATFORMS",
+    caption: "a team per platform, forever",
+    start: 50,
+    end: 80,
+    tint: "hotrod",
+  },
+  {
+    key: "every",
+    label: "EVERY PLATFORM",
+    caption: "symbian: built once, runs on all of them",
     start: 80,
     end: 100,
-    tint: "hotrod",
+    tint: "hud",
   },
 ];
 
-const MARKER_REST = 30;
+const MARKER_REST = 88;
 const MARKER_START = 4;
 
 const TINT_FILL: Record<Zone["tint"], string> = {
@@ -108,7 +108,7 @@ export default function Thesis() {
       if (markerReadout) {
         const zone = ZONES.find((z) => percent >= z.start && percent <= z.end);
         markerReadout.textContent = `${percent.toFixed(0)}% · ${
-          zone?.label ?? "AMPLIFY"
+          zone?.label ?? "EVERY PLATFORM"
         }`;
       }
     };
@@ -274,7 +274,7 @@ export default function Thesis() {
       className="relative w-full bg-paper overflow-hidden md:min-h-[130vh]"
     >
       <h2 id="thesis-heading" className="sr-only">
-        The Amplification Zone
+        The interoperability zone
       </h2>
 
       <div
@@ -286,20 +286,20 @@ export default function Thesis() {
         <div className="thesis-section-marker flex items-center gap-4">
           <span className="block h-px w-14 bg-ink/50" aria-hidden="true" />
           <span className="font-mono text-[13px] tracking-[0.32em] uppercase text-ink">
-            § 05 · POSITION
+            § 06 · POSITION
           </span>
         </div>
 
         <div className="mt-16 md:mt-24 flex flex-col items-center text-center">
           <span className="thesis-subline font-mono text-[10.5px] md:text-[11px] tracking-[0.3em] uppercase text-steel mb-6">
-            Amplification Zone // this is where we stand
+            Interoperability zone // this is where we stand
           </span>
           <h3 className="font-display text-ink leading-[1.08] tracking-[-0.015em] text-[clamp(1.9rem,4.6vw,3.4rem)]">
             <span className="thesis-headline-line block">
-              There is a zone where AI makes you more.
+              Every platform rebuilds perception.
             </span>
             <span className="thesis-headline-line block mt-1">
-              We <span className="text-hotrod">live</span> in it.
+              We <span className="text-hotrod">don&rsquo;t</span>.
             </span>
           </h3>
         </div>
@@ -319,7 +319,7 @@ export default function Thesis() {
 }
 
 /* ───────────────────────────────────────────────
-   Amplification-zone diagram — plate-style.
+   Interoperability plate — blueprint-style.
    ─────────────────────────────────────────────── */
 
 function Diagram() {
@@ -332,12 +332,12 @@ function Diagram() {
         <span className="flex items-center gap-2">
           <span className="block h-px w-8 bg-ink/40" />
           <span className="font-mono text-[9.5px] tracking-[0.3em] uppercase text-steel">
-            human agency — max
+            one host
           </span>
         </span>
         <span className="flex items-center gap-2">
           <span className="font-mono text-[9.5px] tracking-[0.3em] uppercase text-steel">
-            ai autonomy — max
+            every host
           </span>
           <span className="block h-px w-8 bg-ink/40" />
         </span>
@@ -357,8 +357,8 @@ function Diagram() {
                 z.start === 0 ? "none" : "1px dashed rgba(11, 13, 16, 0.2)",
             }}
           >
-            {/* AMPLIFY gets a hatched overlay to mark "our" zone */}
-            {z.key === "amplify" && (
+            {/* EVERY PLATFORM gets a hatched overlay to mark "our" zone */}
+            {z.key === "every" && (
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -373,7 +373,7 @@ function Diagram() {
         {/* Zone labels + captions inside bands */}
         {ZONES.map((z) => {
           const mid = (z.start + z.end) / 2;
-          const isAmplify = z.key === "amplify";
+          const isAmplify = z.key === "every";
           return (
             <div
               key={`${z.key}-text`}
@@ -432,14 +432,14 @@ function Diagram() {
         <div className="thesis-endpoint absolute left-0 flex items-center gap-2">
           <span className="block h-[7px] w-[7px] border border-ink" />
           <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-steel">
-            0.0 · ASSIST
+            01 · ONE HOST
           </span>
         </div>
         <div className="thesis-endpoint absolute right-0 flex items-center gap-2">
           <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-steel">
-            REPLACE · 1.0
+            EVERY HOST · ∞
           </span>
-          <span className="block h-[7px] w-[7px] bg-hotrod" />
+          <span className="block h-[7px] w-[7px] bg-hud-deep" />
         </div>
       </div>
 
@@ -447,7 +447,7 @@ function Diagram() {
       <div className="thesis-dimension mt-8 flex items-center justify-center gap-3">
         <span className="block h-px w-20 bg-ink/30" />
         <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-steel">
-          ai autonomy — 0.0 → 1.0
+          hosts supported — one → every
         </span>
         <span className="block h-px w-20 bg-ink/30" />
       </div>
@@ -464,7 +464,7 @@ function Diagram() {
           <span className="flex items-center gap-1.5">
             <span className="block h-[6px] w-[6px] bg-hud-deep rotate-45" />
             <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-ink">
-              FLASHBACK
+              SYMBIAN
             </span>
           </span>
         </div>
@@ -474,7 +474,7 @@ function Diagram() {
               01
             </span>
             <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-ink-soft">
-              private by default
+              one skill, written once
             </span>
           </li>
           <li className="flex items-baseline gap-2">
@@ -482,7 +482,7 @@ function Diagram() {
               02
             </span>
             <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-ink-soft">
-              on-device
+              runs on any host
             </span>
           </li>
           <li className="flex items-baseline gap-2">
@@ -490,7 +490,7 @@ function Diagram() {
               03
             </span>
             <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-ink-soft">
-              nonautonomous — you stay in control
+              attaches — never replaces
             </span>
           </li>
         </ul>
@@ -534,7 +534,7 @@ function Diagram() {
         className="thesis-marker-readout absolute -translate-x-1/2 font-mono text-[10px] tracking-[0.28em] uppercase text-hud-deep whitespace-nowrap"
         style={{ left: `${MARKER_REST}%`, top: "172px" }}
       >
-        this is us · AMPLIFY
+        this is us · EVERY PLATFORM
       </span>
 
       {/* Engineering title block — bottom-right */}
@@ -544,18 +544,18 @@ function Diagram() {
             drawing
           </div>
           <div className="border-b border-ink/30 px-3 py-1.5 text-ink">
-            03 · amplification zone
+            06 · interoperability zone
           </div>
           <div className="border-r border-b border-ink/30 px-3 py-1.5 text-steel">
             rev
           </div>
           <div className="border-b border-ink/30 px-3 py-1.5 text-ink">
-            04.2026 · 1.0
+            09.2026 · 1.0
           </div>
           <div className="border-r border-ink/30 px-3 py-1.5 text-steel">
             by
           </div>
-          <div className="px-3 py-1.5 text-ink">flashback labs · this is our line</div>
+          <div className="px-3 py-1.5 text-ink">symbian · built once, runs everywhere</div>
         </div>
       </div>
     </div>
@@ -566,40 +566,40 @@ function Diagram() {
    Mobile: vertical blueprint plate.
    The desktop horizontal concept rotated 90°.
    Display-font zone names, heavy blueprint annotations,
-   vertical hairline axis, DETAIL callout on AMPLIFY.
+   vertical hairline axis, DETAIL callout on EVERY PLATFORM.
    ─────────────────────────────────────────────── */
 
 const MOBILE_ZONES = [
   {
-    key: "assist",
+    key: "one",
     numeral: "I",
-    label: "Assist",
-    caption: "tools that do a task for you",
-    range: "0.00 — 0.25",
+    label: "One platform",
+    caption: "one team, one codebase",
+    range: "1 host",
     exampleCount: "01",
   },
   {
-    key: "amplify",
+    key: "two",
     numeral: "II",
-    label: "Amplify",
-    caption: "tools that make you better at a task",
-    range: "0.25 — 0.50",
+    label: "Two platforms",
+    caption: "nearly double the maintenance",
+    range: "2 hosts",
     exampleCount: "02",
   },
   {
-    key: "automate",
+    key: "four",
     numeral: "III",
-    label: "Automate",
-    caption: "tools that do the task without you",
-    range: "0.50 — 0.80",
+    label: "Four platforms",
+    caption: "a team per platform, forever",
+    range: "4 hosts",
     exampleCount: "03",
   },
   {
-    key: "replace",
+    key: "every",
     numeral: "IV",
-    label: "Replace",
-    caption: "tools that don't need you at all",
-    range: "0.80 — 1.00",
+    label: "Every platform",
+    caption: "symbian: built once, runs on all of them",
+    range: "every host",
     exampleCount: "04",
   },
 ] as const;
@@ -609,7 +609,7 @@ function MobileDiagram() {
     <div className="relative" aria-hidden="true">
       <ol className="border-t border-ink/40">
         {MOBILE_ZONES.map((z) => {
-          const isAmplify = z.key === "amplify";
+          const isAmplify = z.key === "every";
           return (
             <li
               key={z.key}
@@ -623,7 +623,7 @@ function MobileDiagram() {
                   : undefined
               }
             >
-              {/* Range + optional FLASHBACK pill */}
+              {/* Range + optional SYMBIAN pill */}
               <div className="flex items-center justify-between gap-2 px-1">
                 <span
                   className={`font-mono text-[9.5px] tracking-[0.3em] uppercase ${
@@ -635,7 +635,7 @@ function MobileDiagram() {
                 {isAmplify && (
                   <span className="flex items-center gap-1.5 bg-hud-deep text-paper-raised px-2.5 py-[5px] font-mono text-[9px] tracking-[0.32em] uppercase">
                     <span className="block h-[6px] w-[6px] bg-paper-raised rotate-45" />
-                    Flashback
+                    Symbian
                   </span>
                 )}
               </div>
@@ -658,13 +658,13 @@ function MobileDiagram() {
                 {z.caption}
               </p>
 
-              {/* AMPLIFY: three principles, no box — just inline numbered list */}
+              {/* EVERY PLATFORM: three notes, no box — just inline numbered list */}
               {isAmplify && (
                 <ul className="mt-5 px-1 space-y-2 border-l border-hud-deep pl-4">
                   {[
-                    "Private by default",
-                    "On-device",
-                    "Nonautonomous — you stay in control",
+                    "One skill, written once",
+                    "Runs on any host",
+                    "Attaches — never replaces",
                   ].map((text, i) => (
                     <li key={i} className="flex items-baseline gap-3">
                       <span className="font-mono text-[9px] tracking-[0.22em] uppercase text-hud-deep shrink-0">
