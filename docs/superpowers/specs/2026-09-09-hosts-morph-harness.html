@@ -1,0 +1,128 @@
+<!doctype html><html><head><meta charset="utf-8"><title>hosts morph check 2</title>
+<style>body{margin:0;background:#F6F6F3;font-family:ui-monospace,monospace;font-size:10px;color:#5A6470;letter-spacing:.15em;text-transform:uppercase}
+.row{display:grid;grid-template-columns:120px repeat(5,1fr);gap:6px;padding:6px 10px;align-items:center;width:1260px}
+.row svg{display:block;width:100%;height:auto;border:1px solid #D8D5CE;background:#F6F6F3}
+.host{fill:none;stroke:#5A6470;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.mod{fill:none;stroke:#0B0D10;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;opacity:.35}
+.lbl{font-size:9px;line-height:1.5}
+pre{font-size:10px;letter-spacing:0;text-transform:none;padding:6px 10px;margin:0;color:#0B0D10}
+.final{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 10px;width:1260px}
+.final svg{width:100%;height:auto;border:1px solid #D8D5CE}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
+</head><body>
+<div id="out"></div>
+<script>
+gsap.registerPlugin(MorphSVGPlugin);
+var f=function(n){return Math.round(n*10)/10;};
+function rrect(x,y,w,h,r){r=Math.min(r,w/2,h/2);var cx=x+w/2;
+ return 'M '+f(cx)+' '+y+' L '+f(x+w-r)+' '+y+' A '+r+' '+r+' 0 0 1 '+(x+w)+' '+f(y+r)+' L '+(x+w)+' '+f(y+h-r)+' A '+r+' '+r+' 0 0 1 '+f(x+w-r)+' '+(y+h)+' L '+f(x+r)+' '+(y+h)+' A '+r+' '+r+' 0 0 1 '+x+' '+f(y+h-r)+' L '+x+' '+f(y+r)+' A '+r+' '+r+' 0 0 1 '+f(x+r)+' '+y+' Z';}
+function ellipse(cx,cy,rx,ry){return 'M '+cx+' '+(cy-ry)+' A '+rx+' '+ry+' 0 0 1 '+(cx+rx)+' '+cy+' A '+rx+' '+ry+' 0 0 1 '+cx+' '+(cy+ry)+' A '+rx+' '+ry+' 0 0 1 '+(cx-rx)+' '+cy+' A '+rx+' '+ry+' 0 0 1 '+cx+' '+(cy-ry)+' Z';}
+function circle(cx,cy,r){return ellipse(cx,cy,r,r);}
+function poly(pts,closed){return 'M '+pts.map(function(p){return f(p[0])+' '+f(p[1]);}).join(' L ')+(closed?' Z':'');}
+function limb(pts,widths){var L=[],R=[];
+ for(var i=0;i<pts.length;i++){var a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)];
+  var dx=b[0]-a[0],dy=b[1]-a[1];var len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
+  var w=widths[Math.min(widths.length-1,Math.max(0,i-1))]/2, w2=widths[Math.min(widths.length-1,i)]/2, ww=(w+w2)/2;
+  L.push([pts[i][0]-dy*ww,pts[i][1]+dx*ww]);R.push([pts[i][0]+dy*ww,pts[i][1]-dx*ww]);}
+ return poly(R.concat(L.reverse()),true);}
+function band(cx,cy,r1,r2,a0,a1){var p=function(r,a){return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};var d=function(a){return a*Math.PI/180;};
+ var o0=p(r2,d(a0)),o1=p(r2,d(a1)),i0=p(r1,d(a0)),i1=p(r1,d(a1));
+ return 'M '+f(o0[0])+' '+f(o0[1])+' A '+r2+' '+r2+' 0 0 1 '+f(o1[0])+' '+f(o1[1])+' L '+f(i1[0])+' '+f(i1[1])+' A '+r1+' '+r1+' 0 0 0 '+f(i0[0])+' '+f(i0[1])+' Z';}
+// bracket: L plate with triangular web, one closed loop
+function bracket(x,y,w,h,mirror){ // x,y = top corner at the wall side; w horizontal reach, h drop
+ var t=6; var pts=mirror?[[x,y],[x-w,y],[x-w,y+t],[x-t-2,y+t+2],[x-t,y+h-8],[x-t,y+h],[x,y+h]]:[[x,y],[x+w,y],[x+w,y+t],[x+t+2,y+t+2],[x+t,y+h-8],[x+t,y+h],[x,y+h]];
+ return poly(pts,true);}
+var HOSTS={
+ quadruped:{
+  s01_ground:'M 120 400 H 480', s02_mount:rrect(262,242,76,6,1), s03_body:rrect(178,248,244,56,12), s04_panel:rrect(262,260,68,32,3),
+  s05_grille:'M 216 262 L 216 292 L 206 292 L 206 262 L 196 262 L 196 292',
+  s06_head:poly([[422,254],[460,248],[466,274],[428,282]],true), s06b_lens:circle(452,262,5),
+  s07_llink:'M 244 304 L 238 320 L 218 320 L 212 304',
+  s08_lsup:limb([[228,318],[208,358],[236,394]],[12,8]), s09_lsup2:limb([[242,318],[224,356],[252,394]],[10,7]),
+  s10_ljoint:circle(228,318,9), s10b:circle(208,358,6),
+  s11_rlink:'M 356 304 L 362 320 L 382 320 L 388 304',
+  s12_rsup:limb([[372,318],[354,358],[380,394]],[12,8]), s13_rsup2:limb([[358,318],[340,356],[366,394]],[10,7]),
+  s14_rjoint:circle(372,318,9), s14b:circle(354,358,6),
+  s15_lfoot:rrect(226,394,22,6,2), s16_rfoot:rrect(370,394,22,6,2) },
+ motorcycle:{
+  s01_ground:'M 100 400 H 500', s02_mount:rrect(282,242,36,8,1),
+  s03_body:poly([[300,250],[334,254],[352,268],[346,290],[318,296],[262,296],[248,280],[256,258]],true),
+  s04_panel:poly([[214,270],[250,272],[254,290],[196,292],[176,284],[180,272]],true),
+  s05_grille:'M 332 306 L 270 306 L 270 318 L 332 318 L 332 330 L 270 330',
+  s06_head:circle(432,266,12), s06b_lens:circle(372,238,5),
+  s07_llink:'M 270 296 L 398 262 L 376 302 L 264 340 L 180 352',
+  s08_lsup:circle(180,352,48), s09_lsup2:circle(180,352,36), s10_ljoint:circle(180,352,20), s10b:circle(180,352,6),
+  s11_rlink:'M 372 238 L 384 254 L 398 262 L 420 352',
+  s12_rsup:circle(420,352,48), s13_rsup2:circle(420,352,36), s14_rjoint:circle(420,352,20), s14b:circle(420,352,6),
+  s15_lfoot:rrect(228,358,72,14,6), s16_rfoot:band(420,352,52,58,205,335) },
+ drone:{
+  s01_ground:'M 140 400 H 460', s02_mount:rrect(262,242,76,6,1), s03_body:rrect(248,248,104,40,12), s04_panel:rrect(270,292,60,14,3),
+  s05_grille:'M 262 258 L 262 278 L 270 278 L 270 258 L 278 258 L 278 278',
+  s06_head:circle(346,304,10), s06b_lens:circle(350,304,4),
+  s07_llink:'M 250 256 L 172 250 L 250 272',
+  s08_lsup:ellipse(166,244,58,14), s09_lsup2:ellipse(166,236,46,5), s10_ljoint:circle(166,252,7), s10b:circle(166,236,3),
+  s11_rlink:'M 350 256 L 428 250 L 350 272',
+  s12_rsup:ellipse(434,244,58,14), s13_rsup2:ellipse(434,236,46,5), s14_rjoint:circle(434,252,7), s14b:circle(434,236,3),
+  s15_lfoot:poly([[266,288],[274,288],[274,326],[292,326],[292,332],[236,332],[236,326],[266,326]],true),
+  s16_rfoot:poly([[326,288],[334,288],[334,326],[364,326],[364,332],[308,332],[308,326],[326,326]],true) },
+ shelf:{ // remapped: every part comes from the nearest drone part of similar shape
+  s01_ground:'M 80 400 H 560',
+  s02_mount:rrect(282,242,36,4,1),                       // mount puck on the board
+  s03_body:rrect(232,246,136,8,0.5),                     // the shelf board = body
+  s04_panel:poly([[430,150],[484,154],[484,330],[430,332]],true), // door panel inset (from battery)
+  s05_grille:'M 292 254 L 292 300 L 288 340 L 292 384',  // power flex from under the shelf down to the skirting (from grille)
+  s06_head:rrect(466,254,30,6,3), s06b_lens:circle(490,257,5), // handle + rose from gimbal
+  s07_llink:'M 110 90 L 110 245 L 110 400',              // wall corner from left arms
+  s08_lsup:rrect(110,384,292,8,0.5),                     // skirting band from left rotor guard
+  s09_lsup2:rrect(142,228,16,16,2),                      // light-switch plate from left rotor disc
+  s10_ljoint:circle(150,236,4), s10b:circle(150,243,1.2), // rocker + screw from left motor/hub
+  s11_rlink:'M 414 398 L 414 118 L 532 118 L 532 398',   // jamb U from right arms
+  s12_rsup:poly([[402,400],[402,106],[544,106],[544,400],[532,400],[532,118],[414,118],[414,400]],true), // architrave band from right guard
+  s13_rsup2:poly([[414,118],[498,124],[498,394],[414,398]],true), // door leaf (ajar) from right disc
+  s14_rjoint:circle(416,140,3), s14b:circle(416,367,3),  // hinges from right motor/hub
+  s15_lfoot:bracket(252,254,28,30,false),                // left bracket from left skid
+  s16_rfoot:bracket(348,254,28,30,true) }                // right bracket from right skid
+};
+var MODULE='<g class="mod"><path d="M 218 150 A 82 82 0 0 0 382 150"/><path d="M 300 232 V 242"/><circle cx="300" cy="150" r="64"/><rect x="241" y="128" width="118" height="44" rx="14"/></g>';
+var SLOTS=Object.keys(HOSTS.quadruped);
+var T=[0.2,0.35,0.5,0.65,0.8];
+var out=document.getElementById('out');
+// final states row
+var fin=document.createElement('div');fin.className='final';
+['quadruped','motorcycle','drone','shelf'].forEach(function(k){fin.innerHTML+='<svg viewBox="0 0 600 420"><g class="host">'+SLOTS.map(function(s){return '<path d="'+HOSTS[k][s]+'"/>';}).join('')+'</g>'+MODULE+'<text x="12" y="410" font-size="14" fill="#0891B2">'+k+'</text></svg>';});
+out.appendChild(fin);
+// centroid travel report
+function bbox(d){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.style.position='absolute';s.style.left='-9999px';document.body.appendChild(s);var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d);s.appendChild(p);var b=p.getBBox();document.body.removeChild(s);return b;}
+var rep='slot            Q>M   M>D   D>S   (centroid travel px)\n';
+SLOTS.forEach(function(s){var c=['quadruped','motorcycle','drone','shelf'].map(function(k){var b=bbox(HOSTS[k][s]);return [b.x+b.width/2,b.y+b.height/2];});
+ var tr=[];for(var i=0;i<3;i++){tr.push(Math.round(Math.hypot(c[i+1][0]-c[i][0],c[i+1][1]-c[i][1])));}
+ rep+=(s+'                ').slice(0,16)+tr.map(function(v){return (v+'     ').slice(0,6);}).join('')+'\n';});
+var pre=document.createElement('pre');pre.textContent=rep;out.appendChild(pre);
+// stagger schedules
+var SCHED={
+ none:function(){return [0,1];},
+ supportsFirst:function(s){ if(/s(08|09|12|13|15|16)/.test(s))return[0,.7]; if(/s(07|11)/.test(s))return[.1,.7]; if(/s0[123]/.test(s))return[.2,.7]; if(/s(10|14)/.test(s))return[.25,.7]; return [.3,.7]; },
+ bodyFirst:function(s){ if(/s0[12]/.test(s))return[0,.7]; if(/s03/.test(s))return[.05,.7]; if(/s(08|09|12|13)/.test(s))return[.12,.75]; if(/s(07|11)/.test(s))return[.15,.75]; if(/s(10|14)/.test(s))return[.25,.7]; if(/s(04|05|06)/.test(s))return[.22,.75]; return [.3,.7]; }
+};
+function row(label,from,to,sched){
+ var cells='<div class="lbl">'+label+'<br>linear · '+sched+'</div>';var svgs=[];
+ T.forEach(function(t){var id='s'+Math.random().toString(36).slice(2);
+  cells+='<svg id="'+id+'" viewBox="0 0 600 420"><g class="host">'+SLOTS.map(function(s){return '<path data-slot="'+s+'" d="'+HOSTS[from][s]+'"/>';}).join('')+'</g>'+MODULE+'<text x="12" y="410" font-size="14" fill="#0891B2">t='+t+'</text></svg>';
+  svgs.push([id,t]);});
+ var d=document.createElement('div');d.className='row';d.innerHTML=cells;out.appendChild(d);
+ svgs.forEach(function(st){var svg=document.getElementById(st[0]);var tl=gsap.timeline({paused:true});
+  SLOTS.forEach(function(s){var el=svg.querySelector('[data-slot="'+s+'"]');var sd=SCHED[sched](s);
+   tl.to(el,{duration:sd[1],ease:sched==='none'?'none':'power2.inOut',morphSVG:{shape:HOSTS[to][s],type:'linear',shapeIndex:'auto'}},sd[0]);});
+  tl.progress(st[1]);});
+}
+var only=new URLSearchParams(location.search).get('only');
+var PAIRS=[['quadruped','motorcycle'],['motorcycle','drone'],['drone','shelf']];
+if(only==='ds')PAIRS=[['drone','shelf']];
+PAIRS.forEach(function(p){
+ row(p[0]+' → '+p[1],p[0],p[1],'none');
+ row(p[0]+' → '+p[1],p[0],p[1],'supportsFirst');
+ row(p[0]+' → '+p[1],p[0],p[1],'bodyFirst');
+});
+</script></body></html>
