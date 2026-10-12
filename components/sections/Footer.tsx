@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer
@@ -58,9 +60,9 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-2">
                 {[
-                  { label: "Skills",     href: "#principles" },
-                  { label: "The stack",  href: "#infrastructure" },
-                  { label: "The module", href: "#products" },
+                  { label: "Skills",     href: "/#principles" },
+                  { label: "The stack",  href: "/#infrastructure" },
+                  { label: "The module", href: "/#products" },
                 ].map(({ label, href }) => (
                   <li key={label}>
                     <a
@@ -79,7 +81,7 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-2">
                 {[
-                  { label: "Partners", href: "#partners" },
+                  { label: "Partners", href: "/#partners" },
                   { label: "Teepin",   href: "https://teepin.com" },
                   { label: "Contact",  href: "mailto:hello@symbian.world" },
                 ].map(({ label, href }) => (
@@ -114,9 +116,23 @@ export default function Footer() {
 
           {/* Bottom row */}
           <div className="mt-12 pt-5 border-t border-hairline flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center">
-            <p className="font-mono text-[10px] tracking-[0.15em] text-steel">
-              © 2026 Symbian
-            </p>
+            <div className="flex items-center gap-5">
+              <p className="font-mono text-[10px] tracking-[0.15em] text-steel">
+                © 2026 Symbian
+              </p>
+              {[
+                { label: "Privacy", href: "/privacy" },
+                { label: "Terms",   href: "/terms" },
+              ].map(({ label, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="font-mono text-[10px] tracking-[0.15em] text-steel hover:text-ink transition-colors duration-220"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
             <a
               href="mailto:hello@symbian.world"
               className="font-mono text-[10px] tracking-[0.15em] text-steel hover:text-ink transition-colors duration-220"
