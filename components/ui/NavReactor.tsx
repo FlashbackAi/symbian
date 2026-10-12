@@ -146,6 +146,16 @@ export default function NavReactor({
     idx: number;
     source: "bolt" | "label";
   } | null>(null);
+
+  /* Clear hover the moment the dial closes — otherwise stale hover would
+     still drive focusedIndex on next open. Done during render (tracking the
+     previous `open`) rather than in an effect, so there's no extra pass. */
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (!open) setHovered(null);
+  }
+
   const hoveredIndex = hovered?.idx ?? null;
   const focusedIndex =
     hovered !== null &&
@@ -358,13 +368,10 @@ export default function NavReactor({
     }
   }, [open]);
 
-  /* Reset hover + wheel accumulator whenever the dial closes — otherwise
-     stale hover would still drive focusedIndex on next open. */
+  /* Reset the wheel accumulator whenever the dial closes. (Hover is reset
+     during render, next to its state.) */
   useEffect(() => {
-    if (!open) {
-      setHovered(null);
-      wheelAccumRef.current = 0;
-    }
+    if (!open) wheelAccumRef.current = 0;
   }, [open]);
 
   /* Esc + arrow keys. */

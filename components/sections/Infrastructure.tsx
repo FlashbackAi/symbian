@@ -805,42 +805,6 @@ function GroundDiamond() {
   );
 }
 
-function DimensionRail() {
-  // Vertical rail on the LEFT of the tower showing layer heights as drafting dimensions.
-  const x = CX - HW - 110;
-  const topY = topFaceY(3) - HD;
-  const botY = topFaceY(0) + THICKNESS + HD;
-  return (
-    <g aria-hidden="true" opacity="0.7">
-      {/* Main rail */}
-      <line x1={x} y1={topY} x2={x} y2={botY} stroke="#0B0D10" strokeOpacity="0.35" strokeWidth="1" />
-      {/* End caps */}
-      <line x1={x - 5} y1={topY} x2={x + 5} y2={topY} stroke="#0B0D10" strokeOpacity="0.45" strokeWidth="1" />
-      <line x1={x - 5} y1={botY} x2={x + 5} y2={botY} stroke="#0B0D10" strokeOpacity="0.45" strokeWidth="1" />
-      {/* Layer ticks */}
-      {LAYERS.map((l) => {
-        const y = topFaceY(l.idx);
-        return (
-          <g key={l.idx}>
-            <line x1={x - 3} y1={y} x2={x + 3} y2={y} stroke="#0B0D10" strokeOpacity="0.5" strokeWidth="1" />
-            <text
-              x={x - 10}
-              y={y + 3}
-              textAnchor="end"
-              fontFamily="var(--font-mono, ui-monospace, monospace)"
-              fontSize="8.5"
-              letterSpacing="1.5"
-              fill="#5A6470"
-            >
-              {l.numeral}
-            </text>
-          </g>
-        );
-      })}
-    </g>
-  );
-}
-
 /* ────── Slab ────── */
 
 function SlabGroup({
